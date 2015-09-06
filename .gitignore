@@ -1,3 +1,11 @@
+# Folders
+.git/
+.vs/
+codeDB/
+obj/
+VisualGDBCache/
+Debug/
+
 # Object files
 *.o
 *.ko
@@ -30,3 +38,4 @@
 
 # Debug files
 *.dSYM/
+*.old
