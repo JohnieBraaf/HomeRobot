@@ -1,7 +1,7 @@
 # Folders
 .git/
 .vs/
-codeDB/
+CodeDB/
 obj/
 VisualGDBCache/
 Debug/
@@ -39,3 +39,4 @@ Debug/
 # Debug files
 *.dSYM/
 *.old
+*.user

@@ -280,6 +280,9 @@
     <ClCompile Include="config_timer.c">
       <Filter>Source files\Config</Filter>
     </ClCompile>
+    <ClCompile Include="movement.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32_USB_Device_Library\Class\CDC\Inc\usbd_cdc.h">
@@ -566,6 +569,9 @@
     </ClInclude>
     <ClInclude Include="config_timer.h">
       <Filter>Header files\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="movement.h">
+      <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

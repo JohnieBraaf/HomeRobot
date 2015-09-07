@@ -5,7 +5,15 @@ void SystemClock_Config(void)
 {
 	RCC_ClkInitTypeDef RCC_ClkInitStruct;
 	RCC_OscInitTypeDef RCC_OscInitStruct;
-
+	
+	/*
+	Clock configuration:
+		Source:		8Mhz external oscillator
+		Speed:		168.000.000	cycles	1 second
+			/1000	168.000		cycles	1 milisecond  <-- Systick interval
+			/1000	168			cycles	1 microsecond
+	*/
+	
 	__PWR_CLK_ENABLE();
 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
@@ -20,7 +28,6 @@ void SystemClock_Config(void)
 	HAL_RCC_OscConfig(&RCC_OscInitStruct);
 
 	RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK |
-	                               RCC_CLOCKTYPE_HCLK |
 	                               RCC_CLOCKTYPE_PCLK1 |
 	                               RCC_CLOCKTYPE_PCLK2);
 
@@ -29,10 +36,16 @@ void SystemClock_Config(void)
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 	HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
+
+	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
+	HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 }
 
+__IO uint32_t RightTrack_RemainActive;
 void SysTick_Handler(void)
 {
 	HAL_IncTick();
 	HAL_SYSTICK_IRQHandler();
+	
+	if (RightTrack_RemainActive != 0) RightTrack_RemainActive--;
 }

@@ -135,6 +135,7 @@
     <ClCompile Include="config_timer.c" />
     <ClCompile Include="HomeRobot.c" />
     <ClCompile Include="config_system.c" />
+    <ClCompile Include="movement.c" />
     <ClCompile Include="system_stm32f4xx.c" />
     <ClCompile Include="usbd_cdc_if.c" />
     <ClCompile Include="usbd_conf.c" />
@@ -231,6 +232,7 @@
     <ClInclude Include="..\..\..\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32_USB_Device_Library\Core\Inc\usbd_ioreq.h" />
     <ClInclude Include="config_gpio.h" />
     <ClInclude Include="config_timer.h" />
+    <ClInclude Include="movement.h" />
     <ClInclude Include="stm32f4xx_hal_conf.h" />
     <ClInclude Include="config_system.h" />
     <ClInclude Include="usbd_cdc_if.h" />

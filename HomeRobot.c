@@ -3,12 +3,17 @@
 #include <config_usb.h>
 #include <config_timer.h>
 #include <config_gpio.h>
+#include <movement.h>
+
+int printLen(int);
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
 extern TIM_HandleTypeDef htim9;
+
+extern __IO uint32_t RightTrack_RemainActive;
 
 UART_HandleTypeDef huart6;
 
@@ -42,33 +47,24 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
-
-	int pwm = 0;
+	
 	char byte;
+	int rightTrack = 2;
 	for (;;)
 	{
-		for (pwm = 1000; pwm <= 1850; pwm++)
+		if (RightTrack_RemainActive <= 0)
+			rightTrack = 50;
+
+		RightTrack(0, rightTrack, 0);
+		
+		int buffer = VCP_read(&byte, 1); 
+		if (buffer >= 1 && byte != 10)
 		{
-			__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_1, pwm);
-			__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_2, pwm);
-			__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_3, pwm);
-			__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_4, pwm);
-			HAL_Delay(5);
-		}
-		HAL_Delay(25);
-		for (pwm = 1850; pwm >= 1000; pwm--)
-		{
-			__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_1, pwm);
-			__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_2, pwm);
-			__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_3, pwm);
-			__HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_4, pwm);
-			HAL_Delay(5);
-		}
-		HAL_Delay(25);
-		if (VCP_read(&byte, 1) != 1)
-			continue;
-		VCP_write("\r\nYou typed ", 12);
-		VCP_write(&byte, 1);
-		VCP_write("\r\n", 2);
+			rightTrack = byte;
+			RightTrack_RemainActive = 500;	
+			VCP_write("\r\nYou typed ", 12);
+			VCP_write(&byte, 1);
+			VCP_write("\r\n", 2);
+		}			
 	}
 }
