@@ -35,8 +35,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc.h"
 
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
+struct s_RxBuffer
+{
+	uint8_t Buffer[CDC_DATA_HS_OUT_PACKET_SIZE];
+	int Position, Size;
+	char ReadDone;
+};
 
 extern USBD_CDC_ItfTypeDef  USBD_CDC_HomeRobot_fops;
 

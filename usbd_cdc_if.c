@@ -98,18 +98,13 @@ USBD_CDC_LineCodingTypeDef linecoding =
   */
 extern USBD_HandleTypeDef USBD_Device;
 
-static struct
-{
-	uint8_t Buffer[CDC_DATA_HS_OUT_PACKET_SIZE];
-	int Position, Size;
-	char ReadDone;
-} s_RxBuffer;
+struct s_RxBuffer VCPRxBuffer;
 
 char g_VCPInitialized;
 
 static int8_t CDC_Init(void)
 {
-	USBD_CDC_SetRxBuffer(&USBD_Device, s_RxBuffer.Buffer);
+	USBD_CDC_SetRxBuffer(&USBD_Device, VCPRxBuffer.Buffer);
 	g_VCPInitialized = 1;
 	return (0);
 }
@@ -216,9 +211,9 @@ static int8_t CDC_Control  (uint8_t cmd, uint8_t* pbuf, uint16_t length)
   */
 static int8_t CDC_Receive(uint8_t* Buf, uint32_t *Len)
 {
-	s_RxBuffer.Position = 0;
-	s_RxBuffer.Size = *Len;
-	s_RxBuffer.ReadDone = 1;
+	VCPRxBuffer.Position = 0;
+	VCPRxBuffer.Size = *Len;
+	VCPRxBuffer.ReadDone = 1;
 	return (0);
 }
 
@@ -238,19 +233,19 @@ static int8_t CDC_Receive(uint8_t* Buf, uint32_t *Len)
 
 int VCP_read(void *pBuffer, int size)
 {
-	if (!s_RxBuffer.ReadDone)
+	if (!VCPRxBuffer.ReadDone)
 		return 0;
 
-	int remaining = s_RxBuffer.Size - s_RxBuffer.Position;
+	int remaining = VCPRxBuffer.Size - VCPRxBuffer.Position;
 	int todo = MIN(remaining, size);
 	if (todo <= 0)
 		return 0;
 
-	memcpy(pBuffer, s_RxBuffer.Buffer + s_RxBuffer.Position, todo);
-	s_RxBuffer.Position += todo;
-	if (s_RxBuffer.Position >= s_RxBuffer.Size)
+	memcpy(pBuffer, VCPRxBuffer.Buffer + VCPRxBuffer.Position, todo);
+	VCPRxBuffer.Position += todo;
+	if (VCPRxBuffer.Position >= VCPRxBuffer.Size)
 	{
-		s_RxBuffer.ReadDone = 0;
+		VCPRxBuffer.ReadDone = 0;
 		USBD_CDC_ReceivePacket(&USBD_Device);
 	}
 
