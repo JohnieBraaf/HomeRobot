@@ -71,33 +71,32 @@ int main(void)
 		LeftTrack();
 		
 		int size = VCPRxBuffer.Size - VCPRxBuffer.Position;
-		VCP_read(&byte, size); 
 		if (size == 8)
 		{
-			VCP_write("\r\nYou typed: \t", 14);
-			VCP_write(&byte, size);
-			VCP_write("\r\n", 2);
+			// read header byte
+			VCP_read(&byte, 1); 						
+			rightTrackForward	= (byte >> 0) & 0x01;
+			leftTrackForward	= (byte >> 1) & 0x01;
+			torsoForward		= (byte >> 2) & 0x01;
+			armsOpen			= (byte >> 3) & 0x01;
+			chestCW				= (byte >> 4) & 0x01;
+			int f				= (byte >> 5) & 0x01;
+			int g				= (byte >> 6) & 0x01;
+			int h				= (byte >> 7) & 0x01;
 			
-			// create array of bytes received
-			size_t len = strlen(&byte); 
-			char byteArray[len];
-			strncpy(byteArray, &byte, sizeof byteArray - 1);
-			byteArray[len] = '\0';
-					
-			rightTrackForward	= (byteArray[0] >> 0) & 0x01;
-			leftTrackForward	= (byteArray[0] >> 1) & 0x01;
-			torsoForward		= (byteArray[0] >> 2) & 0x01;
-			armsOpen			= (byteArray[0] >> 3) & 0x01;
-			chestCW				= (byteArray[0] >> 4) & 0x01;
-			int f				= (byteArray[0] >> 5) & 0x01;
-			int g				= (byteArray[0] >> 6) & 0x01;
-			int h				= (byteArray[0] >> 7) & 0x01;
+			VCP_read(&byte, 1);
+			rightTrackPower = byte;
+			VCP_read(&byte, 1);
+			leftTrackPower  = byte;
+			VCP_read(&byte, 1);
+			torsoPower		= byte;
+			VCP_read(&byte, 1);
+			armsPower		= byte;
+			VCP_read(&byte, 1);
+			chestPower		= byte;
 			
-			rightTrackPower = byteArray[1];
-			leftTrackPower  = byteArray[2];
-			torsoPower		= byteArray[3];
-			armsPower		= byteArray[4];
-			chestPower		= byteArray[5];
+			// remaining 2 of the packet
+			VCP_read(&byte, 2);
 			
 			// return debug messages
 			char *rightTrackText[30];
@@ -115,6 +114,7 @@ int main(void)
 			VCP_write(&armsText, strlen(&armsText));
 			sprintf(&chestText, "ChestCW:\t\t%d, %d\r\n", chestCW, chestPower); 
 			VCP_write(&chestText, strlen(&chestText));
+			VCP_write("**********", 10);
 		}		
 		else if ((size > 0 && size < 6) || size > 6)
 		{
