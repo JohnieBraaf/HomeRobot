@@ -15,7 +15,12 @@ extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
 extern TIM_HandleTypeDef htim9;
 
+extern __IO uint32_t LeftTrack_RemainActive;
 extern __IO uint32_t RightTrack_RemainActive;
+extern __IO uint32_t Torso_RemainActive;
+extern __IO uint32_t Arms_RemainActive;
+extern __IO uint32_t Chest_RemainActive;
+
 extern struct s_RxBuffer VCPRxBuffer;
 
 extern int rightTrackForward;
@@ -29,6 +34,7 @@ int leftTrackPower;
 int torsoPower;
 int armsPower;
 int chestPower;
+int activeDuration;
 
 UART_HandleTypeDef huart6;
 
@@ -73,10 +79,10 @@ int main(void)
 		int size = VCPRxBuffer.Size - VCPRxBuffer.Position;
 		if (size == 8)
 		{
-			// read header byte
+			// header byte
 			VCP_read(&byte, 1); 						
-			rightTrackForward	= (byte >> 0) & 0x01;
-			leftTrackForward	= (byte >> 1) & 0x01;
+			leftTrackForward	= (byte >> 0) & 0x01;
+			rightTrackForward	= (byte >> 1) & 0x01;
 			torsoForward		= (byte >> 2) & 0x01;
 			armsOpen			= (byte >> 3) & 0x01;
 			chestCW				= (byte >> 4) & 0x01;
@@ -84,36 +90,47 @@ int main(void)
 			int g				= (byte >> 6) & 0x01;
 			int h				= (byte >> 7) & 0x01;
 			
+			// payload
 			VCP_read(&byte, 1);
-			rightTrackPower = byte;
+			leftTrackPower = byte;
 			VCP_read(&byte, 1);
-			leftTrackPower  = byte;
+			rightTrackPower  = byte;
 			VCP_read(&byte, 1);
 			torsoPower		= byte;
 			VCP_read(&byte, 1);
 			armsPower		= byte;
 			VCP_read(&byte, 1);
 			chestPower		= byte;
+			VCP_read(&byte, 1);
+			activeDuration	= byte;
+			LeftTrack_RemainActive = (int)activeDuration * 50;
+			RightTrack_RemainActive = activeDuration * 50;
+			Torso_RemainActive = activeDuration * 50;
+			Arms_RemainActive = activeDuration * 50;
+			Chest_RemainActive = activeDuration * 50;
 			
-			// remaining 2 of the packet
-			VCP_read(&byte, 2);
+			// tail
+			VCP_read(&byte, 1);
 			
 			// return debug messages
-			char *rightTrackText[30];
 			char *leftTrackText[30];
+			char *rightTrackText[30];
 			char *torsText[30];
 			char *armsText[30];
 			char *chestText[30];
-			sprintf(&rightTrackText, "Right Track Forward:\t%d, %d\r\n", rightTrackForward, rightTrackPower); 
+			char *durationText[30];
+			sprintf(&leftTrackText, "Right Track Forward:\t%d, %d\r\n", leftTrackForward, leftTrackPower); 
+			VCP_write(&leftTrackText, strlen(&rightTrackText));
+			sprintf(&rightTrackText, "Left Track Forward:\t\t%d, %d\r\n", rightTrackForward, rightTrackPower); 
 			VCP_write(&rightTrackText, strlen(&rightTrackText));
-			sprintf(&leftTrackText, "Left Track Forward:\t\t%d, %d\r\n", leftTrackForward, leftTrackPower); 
-			VCP_write(&leftTrackText, strlen(&leftTrackText));
 			sprintf(&torsText, "Torso Forward:\t\t%d, %d\r\n", torsoForward, torsoPower); 
 			VCP_write(&torsText, strlen(&torsText));
 			sprintf(&armsText, "ArmsOpen:\t\t%d, %d\r\n", armsOpen, armsPower); 
 			VCP_write(&armsText, strlen(&armsText));
 			sprintf(&chestText, "ChestCW:\t\t%d, %d\r\n", chestCW, chestPower); 
 			VCP_write(&chestText, strlen(&chestText));
+			sprintf(&durationText, "Duration:\t\t\t\%dms\r\n", activeDuration * 50); 
+			VCP_write(&durationText, strlen(&durationText));
 			VCP_write("**********", 10);
 		}		
 		else if ((size > 0 && size < 6) || size > 6)

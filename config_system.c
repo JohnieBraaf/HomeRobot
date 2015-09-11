@@ -41,11 +41,19 @@ void SystemClock_Config(void)
 	HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 }
 
+__IO uint32_t LeftTrack_RemainActive;
 __IO uint32_t RightTrack_RemainActive;
+__IO uint32_t Torso_RemainActive;
+__IO uint32_t Arms_RemainActive;
+__IO uint32_t Chest_RemainActive;
 void SysTick_Handler(void)
 {
 	HAL_IncTick();
 	HAL_SYSTICK_IRQHandler();
 	
+	if (LeftTrack_RemainActive != 0) LeftTrack_RemainActive--;
 	if (RightTrack_RemainActive != 0) RightTrack_RemainActive--;
+	if (Torso_RemainActive != 0) Torso_RemainActive--;
+	if (Arms_RemainActive != 0) Arms_RemainActive--;
+	if (Chest_RemainActive != 0) Chest_RemainActive--;
 }
