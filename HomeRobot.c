@@ -4,6 +4,7 @@
 #include <config_usb.h>
 #include <config_timer.h>
 #include <config_gpio.h>
+#include <config_i2s.h> 
 #include <movement.h>
 #include <string.h>
 
@@ -63,6 +64,7 @@ int main(void)
 	MX_TIM5_Init();
 	MX_TIM9_Init();
 	MX_USART6_UART_Init();
+	MX_I2S3_Init();
 
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
@@ -75,6 +77,9 @@ int main(void)
 	{
 		RightTrack();
 		LeftTrack();
+		
+		//while (I2C_GetFlagStatus(I2C1, I2C_ISR_BUSY) != RESET)
+			byte = 0;
 		
 		int size = VCPRxBuffer.Size - VCPRxBuffer.Position;
 		if (size == 8)
