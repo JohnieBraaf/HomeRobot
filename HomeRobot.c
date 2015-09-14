@@ -5,10 +5,9 @@
 #include <config_timer.h>
 #include <config_gpio.h>
 #include <config_i2s.h> 
+#include <config_i2c.h> 
 #include <movement.h>
 #include <string.h>
-
-int printLen(int);
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim3;
@@ -65,6 +64,7 @@ int main(void)
 	MX_TIM9_Init();
 	MX_USART6_UART_Init();
 	MX_I2S3_Init();
+	MX_I2C1_Init();
 
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);

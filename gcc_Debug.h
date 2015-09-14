@@ -603,9 +603,6 @@
 #ifndef __UDQ_FBIT__
 #define __UDQ_FBIT__ 64
 #endif
-#ifndef DEBUG
-#define DEBUG 1
-#endif
 #ifndef __INT8_TYPE__
 #define __INT8_TYPE__ signed char
 #endif
@@ -966,6 +963,9 @@
 #ifndef __SIZEOF_DOUBLE__
 #define __SIZEOF_DOUBLE__ 8
 #endif
+#ifndef Debug
+#define Debug 1
+#endif
 #ifndef __UFRACT_EPSILON__
 #define __UFRACT_EPSILON__ 0x1P-16UR
 #endif
@@ -1089,14 +1089,6 @@
 #endif
 
 // --- Include directories begin --- //
-//.
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/arm-eabi/thumb/fpu/cortex_m4
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/backward
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include-fixed
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/sys-include
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include
 //CMSIS/Device/ST/STM32F4xx/Include
 //CMSIS/Include
 //STM32F4xx_HAL_Driver/Inc
@@ -1108,6 +1100,14 @@
 //AI
 //Audio
 //Sensors
+//.
+//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0
+//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/arm-eabi/thumb/fpu/cortex_m4
+//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/backward
+//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include
+//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include-fixed
+//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/sys-include
+//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include
 // --- Include directories end --- //
 
 
