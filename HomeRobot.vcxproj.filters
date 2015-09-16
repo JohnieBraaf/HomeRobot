@@ -143,6 +143,12 @@
     <Filter Include="Header files\STM32_USB_Device_Library\Core\Src">
       <UniqueIdentifier>{4ef1b394-1083-4714-b164-4f2a87ea786b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source files\STM32F4-Discovery">
+      <UniqueIdentifier>{3f0fe34d-3c4f-43a9-a5db-26c6482005ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\STM32F4-Discovery">
+      <UniqueIdentifier>{959e76aa-bb0f-4b42-8876-d7495f23205d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API\movement.c">
@@ -396,6 +402,24 @@
     </ClCompile>
     <ClCompile Include="CMSIS\Device\ST\STM32F4xx\Source\startup_stm32f407xx.c">
       <Filter>Source files\CMSIS\Device\ST\STM32F4xx\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="BSP\STM32F4-Discovery\stm32f4_discovery.c">
+      <Filter>Source files\STM32F4-Discovery</Filter>
+    </ClCompile>
+    <ClCompile Include="BSP\STM32F4-Discovery\stm32f4_discovery_accelerometer.c">
+      <Filter>Source files\STM32F4-Discovery</Filter>
+    </ClCompile>
+    <ClCompile Include="BSP\STM32F4-Discovery\stm32f4_discovery_audio.c">
+      <Filter>Source files\STM32F4-Discovery</Filter>
+    </ClCompile>
+    <ClCompile Include="BSP\STM32F4-Discovery\lis302dl.c">
+      <Filter>Source files\STM32F4-Discovery</Filter>
+    </ClCompile>
+    <ClCompile Include="BSP\STM32F4-Discovery\cs43l22.c">
+      <Filter>Source files\STM32F4-Discovery</Filter>
+    </ClCompile>
+    <ClCompile Include="BSP\STM32F4-Discovery\lis3dsh.c">
+      <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -705,6 +729,33 @@
     <ClInclude Include="STM32_USB_Device_Library\Core\Inc\usbd_ioreq.h">
       <Filter>Header files\STM32_USB_Device_Library\Core\Inc</Filter>
     </ClInclude>
+    <ClInclude Include="BSP\STM32F4-Discovery\stm32f4_discovery.h">
+      <Filter>Header files\STM32F4-Discovery</Filter>
+    </ClInclude>
+    <ClInclude Include="BSP\STM32F4-Discovery\stm32f4_discovery_accelerometer.h">
+      <Filter>Header files\STM32F4-Discovery</Filter>
+    </ClInclude>
+    <ClInclude Include="BSP\STM32F4-Discovery\stm32f4_discovery_audio.h">
+      <Filter>Header files\STM32F4-Discovery</Filter>
+    </ClInclude>
+    <ClInclude Include="BSP\STM32F4-Discovery\cs43l22.h">
+      <Filter>Header files\STM32F4-Discovery</Filter>
+    </ClInclude>
+    <ClInclude Include="BSP\STM32F4-Discovery\lis302dl.h">
+      <Filter>Header files\STM32F4-Discovery</Filter>
+    </ClInclude>
+    <ClInclude Include="BSP\STM32F4-Discovery\audio.h">
+      <Filter>Header files\STM32F4-Discovery</Filter>
+    </ClInclude>
+    <ClInclude Include="BSP\STM32F4-Discovery\pdm_filter.h">
+      <Filter>Header files\STM32F4-Discovery</Filter>
+    </ClInclude>
+    <ClInclude Include="BSP\STM32F4-Discovery\accelero.h">
+      <Filter>Header files\STM32F4-Discovery</Filter>
+    </ClInclude>
+    <ClInclude Include="BSP\STM32F4-Discovery\lis3dsh.h">
+      <Filter>Header files\STM32F4-Discovery</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
@@ -717,5 +768,8 @@
     <None Include="stm32.mak">
       <Filter>Source files\Device-specific files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="BSP\STM32F4-Discovery\libPDMFilter_CM4F_GCC.a" />
   </ItemGroup>
 </Project>

@@ -37,7 +37,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <NMakeIncludeSearchPath>config;.;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0\arm-eabi\thumb\fpu\cortex_m4;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0\backward;d:\jan\software\sysgcc\arm-eabi\lib\gcc\arm-eabi\5.2.0\include;d:\jan\software\sysgcc\arm-eabi\lib\gcc\arm-eabi\5.2.0\include-fixed;d:\jan\software\sysgcc\arm-eabi\arm-eabi\sys-include;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include;CMSIS/Device/ST/STM32F4xx/Include;CMSIS/Include;STM32F4xx_HAL_Driver/Inc;STM32_USB_Device_Library/Core/Inc;STM32_USB_Device_Library/Class/CDC/Inc;Config;USBD;API;Audio;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeIncludeSearchPath>CMSIS/Device/ST/STM32F4xx/Include;CMSIS/Include;STM32F4xx_HAL_Driver/Inc;STM32_USB_Device_Library/Core/Inc;STM32_USB_Device_Library/Class/CDC/Inc;Config;USBD;API;Audio;BSP/STM32F4-Discovery;.;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0\arm-eabi\thumb\fpu\cortex_m4;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0\backward;d:\jan\software\sysgcc\arm-eabi\lib\gcc\arm-eabi\5.2.0\include;d:\jan\software\sysgcc\arm-eabi\lib\gcc\arm-eabi\5.2.0\include-fixed;d:\jan\software\sysgcc\arm-eabi\arm-eabi\sys-include;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
     <NMakeForcedIncludes>$(ProjectDir)\gcc_Debug.h;$(VISUALGDB_DIR)\gcc_compat.h;..\..\..\Software\SysGCC\arm-eabi\stm32_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
     <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
@@ -72,6 +72,12 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup>
+    <ClCompile Include="BSP\STM32F4-Discovery\cs43l22.c" />
+    <ClCompile Include="BSP\STM32F4-Discovery\lis302dl.c" />
+    <ClCompile Include="BSP\STM32F4-Discovery\lis3dsh.c" />
+    <ClCompile Include="BSP\STM32F4-Discovery\stm32f4_discovery.c" />
+    <ClCompile Include="BSP\STM32F4-Discovery\stm32f4_discovery_accelerometer.c" />
+    <ClCompile Include="BSP\STM32F4-Discovery\stm32f4_discovery_audio.c" />
     <ClCompile Include="CMSIS\Device\ST\STM32F4xx\Source\startup_stm32f407xx.c" />
     <ClCompile Include="HomeRobot.c" />
     <ClCompile Include="API\movement.c" />
@@ -160,6 +166,15 @@
   <ItemGroup>
     <ClInclude Include="API\movement.h" />
     <ClInclude Include="Audio\codec.h" />
+    <ClInclude Include="BSP\STM32F4-Discovery\accelero.h" />
+    <ClInclude Include="BSP\STM32F4-Discovery\audio.h" />
+    <ClInclude Include="BSP\STM32F4-Discovery\cs43l22.h" />
+    <ClInclude Include="BSP\STM32F4-Discovery\lis302dl.h" />
+    <ClInclude Include="BSP\STM32F4-Discovery\lis3dsh.h" />
+    <ClInclude Include="BSP\STM32F4-Discovery\pdm_filter.h" />
+    <ClInclude Include="BSP\STM32F4-Discovery\stm32f4_discovery.h" />
+    <ClInclude Include="BSP\STM32F4-Discovery\stm32f4_discovery_accelerometer.h" />
+    <ClInclude Include="BSP\STM32F4-Discovery\stm32f4_discovery_audio.h" />
     <ClInclude Include="CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h" />
     <ClInclude Include="CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h" />
     <ClInclude Include="CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h" />
@@ -260,5 +275,8 @@
     <ClInclude Include="USBD\usbd_cdc_if.h" />
     <ClInclude Include="USBD\usbd_conf.h" />
     <ClInclude Include="USBD\usbd_desc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="BSP\STM32F4-Discovery\libPDMFilter_CM4F_GCC.a" />
   </ItemGroup>
 </Project>

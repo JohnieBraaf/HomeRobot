@@ -8,6 +8,7 @@
 #include <config_i2c.h> 
 #include <movement.h>
 #include <string.h>
+#include <stm32f4_discovery_audio.h>
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim3;
@@ -63,9 +64,11 @@ int main(void)
 	MX_TIM5_Init();
 	MX_TIM9_Init();
 	MX_USART6_UART_Init();
-	MX_I2S3_Init();
-	MX_I2C1_Init();
-
+	//MX_I2S3_Init();
+	//MX_I2C1_Init();
+	
+	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 100, I2S_AUDIOFREQ_48K);
+		
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
@@ -75,11 +78,18 @@ int main(void)
 	int rightTrack = 2;
 	for (;;)
 	{
+		// make some noise 
+		int x = 0;
+		int y = 400;
+		for (x = 0; x < y; x++)
+			BSP_AUDIO_OUT_Play_Direct((uint16_t*)x, 2); 
+		for (x = y; x < 0; x--)
+			BSP_AUDIO_OUT_Play_Direct((uint16_t*)x, 2); 
+		
 		RightTrack();
 		LeftTrack();
 		
-		//while (I2C_GetFlagStatus(I2C1, I2C_ISR_BUSY) != RESET)
-			byte = 0;
+		byte = 0;
 		
 		int size = VCPRxBuffer.Size - VCPRxBuffer.Position;
 		if (size == 8)

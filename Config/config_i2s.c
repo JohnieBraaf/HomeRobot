@@ -94,7 +94,7 @@ void HAL_I2S_MspDeInit(I2S_HandleTypeDef* hi2s)
 		//HAL_DMA_DeInit(hi2s->hdmarx);
 	}
 } 
-
+/*
 void
 HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s)
 {
@@ -106,7 +106,7 @@ HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s)
 {
 	uint32_t newTx = 0;
 }
-/*
+
 void DMA1_Stream3_IRQHandler(void) {
 	HAL_DMA_IRQHandler(hi2s2.hdmarx);
 }

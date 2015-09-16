@@ -603,9 +603,6 @@
 #ifndef __UDQ_FBIT__
 #define __UDQ_FBIT__ 64
 #endif
-#ifndef DEBUG
-#define DEBUG 1
-#endif
 #ifndef __INT8_TYPE__
 #define __INT8_TYPE__ signed char
 #endif
@@ -966,6 +963,9 @@
 #ifndef __SIZEOF_DOUBLE__
 #define __SIZEOF_DOUBLE__ 8
 #endif
+#ifndef Debug
+#define Debug 1
+#endif
 #ifndef __UFRACT_EPSILON__
 #define __UFRACT_EPSILON__ 0x1P-16UR
 #endif
@@ -1089,15 +1089,6 @@
 #endif
 
 // --- Include directories begin --- //
-//config
-//.
-//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0
-//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/arm-eabi/thumb/fpu/cortex_m4
-//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/backward
-//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include
-//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include-fixed
-//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/sys-include
-//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include
 //CMSIS/Device/ST/STM32F4xx/Include
 //CMSIS/Include
 //STM32F4xx_HAL_Driver/Inc
@@ -1106,8 +1097,17 @@
 //Config
 //USBD
 //API
-//AI
 //Audio
+//BSP/STM32F4-Discovery
+//.
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/arm-eabi/thumb/fpu/cortex_m4
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/backward
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include-fixed
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/sys-include
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include
+//AI
 //Sensors
 // --- Include directories end --- //
 
