@@ -2,8 +2,12 @@
 <EmbeddedProfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ToolchainID>com.visualgdb.arm-eabi</ToolchainID>
   <BspID>com.visualgdb.bsp.in-place</BspID>
-  <BspVersion>3.3</BspVersion>
+  <BspVersion>1.0</BspVersion>
   <McuID>STM32F407VG</McuID>
+  <MCUDefinitionFile>CMSIS\Device\ST\STM32F4xx\Source\stm32f407xx.xml</MCUDefinitionFile>
+  <MCUProperties>
+    <Entries />
+  </MCUProperties>
   <BSPSourceFolderName>Device-specific files</BSPSourceFolderName>
   <InPlaceMCU>
     <ID>STM32F407VG</ID>
@@ -19,7 +23,10 @@
       <AdditionalLibraries>
         <string />
       </AdditionalLibraries>
-      <LDFLAGS> </LDFLAGS>
+      <CFLAGS />
+      <CXXFLAGS />
+      <LDFLAGS />
+      <ASFLAGS />
       <LinkerScript />
       <COMMONFLAGS>-mcpu=cortex-m4 -mthumb -mfloat-abi=hard</COMMONFLAGS>
       <EnableLinkerGroups>true</EnableLinkerGroups>
@@ -140,7 +147,7 @@
     <RAMSize>196608</RAMSize>
     <FLASHBase>134217728</FLASHBase>
     <RAMBase>536870912</RAMBase>
-    <MCUDefinitionFile>STM32F4xxxx/DeviceDefinitions/stm32f407xx.xml</MCUDefinitionFile>
+    <MCUDefinitionFile>CMSIS\Device\ST\STM32F4xx\Source\stm32f407xx.xml</MCUDefinitionFile>
     <AdditionalSourcesRequiredForTesting>false</AdditionalSourcesRequiredForTesting>
   </InPlaceMCU>
   <MCUMakFile>stm32.mak</MCUMakFile>
