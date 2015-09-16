@@ -9,6 +9,7 @@
 #include <movement.h>
 #include <string.h>
 #include <stm32f4_discovery_audio.h>
+#include <math.h>
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim3;
@@ -21,6 +22,7 @@ extern __IO uint32_t RightTrack_RemainActive;
 extern __IO uint32_t Torso_RemainActive;
 extern __IO uint32_t Arms_RemainActive;
 extern __IO uint32_t Chest_RemainActive;
+extern __IO uint32_t Audio_tone;
 
 extern struct s_RxBuffer VCPRxBuffer;
 
@@ -38,6 +40,10 @@ int chestPower;
 int activeDuration;
 
 UART_HandleTypeDef huart6;
+
+__IO int16_t sample = 0;
+__IO int freq, fs, amplitude, cycle;
+__IO double angle, increment;
 
 int main(void)
 {
@@ -67,25 +73,45 @@ int main(void)
 	//MX_I2S3_Init();
 	//MX_I2C1_Init();
 	
-	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 100, I2S_AUDIOFREQ_48K);
+	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 100, I2S_AUDIOFREQ_8K);
 		
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
-	
+
+	freq = 1000;
+	fs = 10;
+
 	char byte;
-	int rightTrack = 2;
 	for (;;)
 	{
+		if (Audio_tone == 0) 
+		{
+			freq = freq - 5;
+			Audio_tone = 500;		
+		}	
+			
+		amplitude = 100;
+		angle = -45;
+		increment = ((2 * 3.41) / (fs / freq)) + 1000;
+		for (cycle = 1;cycle <= freq;cycle++)
+		{
+			while (angle <= (2 * 3.41))
+			{
+				sample = amplitude * sin(angle);
+				angle = angle + increment;
+				BSP_AUDIO_OUT_Play_Direct((uint16_t*)&sample, sizeof(&sample)); 					
+			}				
+		}
 		// make some noise 
-		int x = 0;
+		/*int x = 0;
 		int y = 400;
 		for (x = 0; x < y; x++)
 			BSP_AUDIO_OUT_Play_Direct((uint16_t*)x, 2); 
 		for (x = y; x < 0; x--)
 			BSP_AUDIO_OUT_Play_Direct((uint16_t*)x, 2); 
-		
+		*/
 		RightTrack();
 		LeftTrack();
 		

@@ -46,6 +46,7 @@ __IO uint32_t RightTrack_RemainActive;
 __IO uint32_t Torso_RemainActive;
 __IO uint32_t Arms_RemainActive;
 __IO uint32_t Chest_RemainActive;
+__IO uint32_t Audio_tone;
 void SysTick_Handler(void)
 {
 	HAL_IncTick();
@@ -56,4 +57,5 @@ void SysTick_Handler(void)
 	if (Torso_RemainActive != 0) Torso_RemainActive--;
 	if (Arms_RemainActive != 0) Arms_RemainActive--;
 	if (Chest_RemainActive != 0) Chest_RemainActive--;
+	if (Audio_tone != 0) Audio_tone--;
 }
