@@ -1097,25 +1097,25 @@
 //Config
 //USBD
 //API
-//AI
 //Audio
-//Sensors
 //.
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/arm-eabi/thumb/fpu/cortex_m4
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/backward
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include-fixed
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/sys-include
-//c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/arm-eabi/thumb/fpu/cortex_m4
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/backward
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include-fixed
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/sys-include
+//d:\jan\software\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include
+//AI
+//Sensors
 // --- Include directories end --- //
 
 
 // --- Library directories begin --- //
-//c:/sysgcc/arm-eabi/bin/../lib/gcc/arm-eabi/5.2.0/thumb/fpu/cortex_m4/
-//c:/sysgcc/arm-eabi/bin/../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/lib/thumb/fpu/cortex_m4/
-//c:/sysgcc/arm-eabi/bin/../lib/gcc/arm-eabi/5.2.0/
-//c:/sysgcc/arm-eabi/bin/../lib/gcc/
-//c:/sysgcc/arm-eabi/bin/../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/lib/
+//d:/jan/software/sysgcc/arm-eabi/bin/../lib/gcc/arm-eabi/5.2.0/thumb/fpu/cortex_m4/
+//d:/jan/software/sysgcc/arm-eabi/bin/../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/lib/thumb/fpu/cortex_m4/
+//d:/jan/software/sysgcc/arm-eabi/bin/../lib/gcc/arm-eabi/5.2.0/
+//d:/jan/software/sysgcc/arm-eabi/bin/../lib/gcc/
+//d:/jan/software/sysgcc/arm-eabi/bin/../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/lib/
 // --- Library directories begin --- //
 

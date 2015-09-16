@@ -382,9 +382,6 @@
     <ClCompile Include="HomeRobot.c">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F4xxxx\StartupFiles\startup_stm32f407xx.c">
-      <Filter>Source files\Device-specific files</Filter>
-    </ClCompile>
     <ClCompile Include="STM32_USB_Device_Library\Class\CDC\Src\usbd_cdc.c">
       <Filter>Source files\STM32_USB_Device_Library\Class\CDC\Src</Filter>
     </ClCompile>
@@ -396,6 +393,9 @@
     </ClCompile>
     <ClCompile Include="STM32_USB_Device_Library\Core\Src\usbd_ioreq.c">
       <Filter>Source files\STM32_USB_Device_Library\Core\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="CMSIS\Device\ST\STM32F4xx\Source\startup_stm32f407xx.c">
+      <Filter>Source files\CMSIS\Device\ST\STM32F4xx\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

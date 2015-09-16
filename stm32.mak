@@ -5,7 +5,7 @@
 
 #VisualGDB provides BSP_ROOT and TOOLCHAIN_ROOT via environment when running Make. The line below will only be active if GNU Make is started manually.
 BSP_ROOT ?= $(LOCALAPPDATA)/VisualGDB/EmbeddedBSPs/arm-eabi/com.sysprogs.arm.stm32
-TOOLCHAIN_ROOT ?= C:/SysGCC/arm-eabi
+TOOLCHAIN_ROOT ?= D:/Jan/Software/SysGCC/arm-eabi
 
 #Embedded toolchain
 CC := $(TOOLCHAIN_ROOT)/bin/arm-eabi-gcc.exe
@@ -28,5 +28,5 @@ CXXFLAGS +=
 ASFLAGS += 
 LDFLAGS +=  
 COMMONFLAGS += -mcpu=cortex-m4 -mthumb -mfloat-abi=hard
-LINKER_SCRIPT := $(BSP_ROOT)/STM32F4xxxx/LinkerScripts/STM32F407VG_flash.lds
+LINKER_SCRIPT := 
 
