@@ -124,18 +124,18 @@ int main(void)
 			char *armsText[30];
 			char *chestText[30];
 			char *durationText[30];
-			sprintf(&leftTrackText, "Right Track Forward:\t%d, %d\r\n", leftTrackForward, leftTrackPower); 
-			VCP_write(&leftTrackText, strlen(&rightTrackText));
-			sprintf(&rightTrackText, "Left Track Forward:\t\t%d, %d\r\n", rightTrackForward, rightTrackPower); 
-			VCP_write(&rightTrackText, strlen(&rightTrackText));
-			sprintf(&torsText, "Torso Forward:\t\t%d, %d\r\n", torsoForward, torsoPower); 
-			VCP_write(&torsText, strlen(&torsText));
-			sprintf(&armsText, "ArmsOpen:\t\t%d, %d\r\n", armsOpen, armsPower); 
-			VCP_write(&armsText, strlen(&armsText));
-			sprintf(&chestText, "ChestCW:\t\t%d, %d\r\n", chestCW, chestPower); 
-			VCP_write(&chestText, strlen(&chestText));
-			sprintf(&durationText, "Duration:\t\t\t\%dms\r\n", activeDuration * 50); 
-			VCP_write(&durationText, strlen(&durationText));
+			sprintf((char*)leftTrackText, "Right Track Forward:\t%d, %d\r\n", leftTrackForward, leftTrackPower); 
+			VCP_write(&leftTrackText, strlen((char*)rightTrackText));
+			sprintf((char*)rightTrackText, "Left Track Forward:\t\t%d, %d\r\n", rightTrackForward, rightTrackPower); 
+			VCP_write(&rightTrackText, strlen((char*)rightTrackText));
+			sprintf((char*)torsText, "Torso Forward:\t\t%d, %d\r\n", torsoForward, torsoPower); 
+			VCP_write(&torsText, strlen((char*)torsText));
+			sprintf((char*)armsText, "ArmsOpen:\t\t%d, %d\r\n", armsOpen, armsPower); 
+			VCP_write(&armsText, strlen((char*)armsText));
+			sprintf((char*)chestText, "ChestCW:\t\t%d, %d\r\n", chestCW, chestPower); 
+			VCP_write(&chestText, strlen((char*)chestText));
+			sprintf((char*)durationText, "Duration:\t\t\t\%dms\r\n", activeDuration * 50); 
+			VCP_write(&durationText, strlen((char*)durationText));
 			VCP_write("**********", 10);
 		}		
 		else if ((size > 0 && size < 6) || size > 6)
