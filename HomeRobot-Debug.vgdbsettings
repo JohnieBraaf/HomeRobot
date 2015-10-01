@@ -16,7 +16,7 @@
     <MakeCommandTemplate>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
       <Command>cmd.exe</Command>
-      <Arguments>/c "D:\Jan\Software\SysGCC\arm-eabi\bin\make.exe"</Arguments>
+      <Arguments>/c "C:\SysGCC\arm-eabi\bin\make.exe"</Arguments>
       <WorkingDirectory>$(BuildDir)</WorkingDirectory>
       <Environment>
         <Records>
@@ -26,7 +26,7 @@
           </Record>
           <Record>
             <VariableName>PATH</VariableName>
-            <Value>D:\Jan\Software\SysGCC\arm-eabi\bin;%PATH%</Value>
+            <Value>C:\SysGCC\arm-eabi\bin;%PATH%</Value>
           </Record>
         </Records>
       </Environment>
@@ -151,7 +151,6 @@
     <ShowMessageAfterExecuting>true</ShowMessageAfterExecuting>
   </CustomShortcuts>
   <UserDefinedVariables />
-  <ImportedPropertySheets />
   <CodeSense>
     <Enabled>Unknown</Enabled>
     <ExtraSettings>

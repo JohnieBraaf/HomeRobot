@@ -37,8 +37,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <NMakeIncludeSearchPath>CMSIS/Device/ST/STM32F4xx/Include;CMSIS/Include;STM32F4xx_HAL_Driver/Inc;STM32_USB_Device_Library/Core/Inc;STM32_USB_Device_Library/Class/CDC/Inc;Config;USBD;API;Audio;BSP/STM32F4-Discovery;.;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0\arm-eabi\thumb\fpu\cortex_m4;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0\backward;d:\jan\software\sysgcc\arm-eabi\lib\gcc\arm-eabi\5.2.0\include;d:\jan\software\sysgcc\arm-eabi\lib\gcc\arm-eabi\5.2.0\include-fixed;d:\jan\software\sysgcc\arm-eabi\arm-eabi\sys-include;d:\jan\software\sysgcc\arm-eabi\arm-eabi\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
-    <NMakeForcedIncludes>$(ProjectDir)\gcc_Debug.h;$(VISUALGDB_DIR)\gcc_compat.h;..\..\..\Software\SysGCC\arm-eabi\stm32_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeIncludeSearchPath>CMSIS/Device/ST/STM32F4xx/Include;CMSIS/Include;STM32F4xx_HAL_Driver/Inc;STM32_USB_Device_Library/Core/Inc;STM32_USB_Device_Library/Class/CDC/Inc;Config;USBD;API;Audio;BSP/STM32F4-Discovery;.;c:\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0;c:\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0\arm-eabi\thumb\fpu\cortex_m4;c:\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0\backward;c:\sysgcc\arm-eabi\lib\gcc\arm-eabi\5.2.0\include;c:\sysgcc\arm-eabi\lib\gcc\arm-eabi\5.2.0\include-fixed;c:\sysgcc\arm-eabi\arm-eabi\sys-include;c:\sysgcc\arm-eabi\arm-eabi\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes>$(ProjectDir)\gcc_Debug.h;$(VISUALGDB_DIR)\gcc_compat.h;C:\SysGCC\arm-eabi\stm32_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
     <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
@@ -50,7 +50,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeIncludeSearchPath>.;c:\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0;c:\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0\arm-eabi\thumb\fpu\cortex_m4;c:\sysgcc\arm-eabi\arm-eabi\include\c++\5.2.0\backward;c:\sysgcc\arm-eabi\lib\gcc\arm-eabi\5.2.0\include;c:\sysgcc\arm-eabi\lib\gcc\arm-eabi\5.2.0\include-fixed;c:\sysgcc\arm-eabi\arm-eabi\sys-include;c:\sysgcc\arm-eabi\arm-eabi\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
-    <NMakeForcedIncludes>$(ProjectDir)\gcc_Release.h;$(VISUALGDB_DIR)\gcc_compat.h;..\..\..\Software\SysGCC\arm-eabi\stm32_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeForcedIncludes>$(ProjectDir)\gcc_Release.h;$(VISUALGDB_DIR)\gcc_compat.h;C:\SysGCC\arm-eabi\stm32_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
     <NMakePreprocessorDefinitions>__VisualGDB_CFG_Release;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
@@ -72,6 +72,8 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup>
+    <ClCompile Include="API\crypto.c" />
+    <ClCompile Include="API\serial.c" />
     <ClCompile Include="BSP\STM32F4-Discovery\cs43l22.c" />
     <ClCompile Include="BSP\STM32F4-Discovery\lis302dl.c" />
     <ClCompile Include="BSP\STM32F4-Discovery\lis3dsh.c" />
@@ -162,9 +164,12 @@
     <ClCompile Include="USBD\usbd_cdc_if.c" />
     <ClCompile Include="USBD\usbd_conf.c" />
     <ClCompile Include="USBD\usbd_desc.c" />
+    <ClCompile Include="wifi.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="API\crypto.h" />
     <ClInclude Include="API\movement.h" />
+    <ClInclude Include="API\serial.h" />
     <ClInclude Include="Audio\codec.h" />
     <ClInclude Include="BSP\STM32F4-Discovery\accelero.h" />
     <ClInclude Include="BSP\STM32F4-Discovery\audio.h" />
@@ -197,6 +202,7 @@
     <ClInclude Include="Config\config_system.h" />
     <ClInclude Include="Config\config_timer.h" />
     <ClInclude Include="Config\config_usb.h" />
+    <ClInclude Include="HomeRobot.h" />
     <ClInclude Include="STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h" />
     <ClInclude Include="STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_adc.h" />
     <ClInclude Include="STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_adc_ex.h" />

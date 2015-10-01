@@ -277,6 +277,6 @@ int VCP_write(const void *pBuffer, int size)
 	if (USBD_CDC_TransmitPacket(&USBD_Device) != USBD_OK)
 		return 0;
 
-	while (pCDC->TxState) {} //Wait until transfer is done
+	//while (pCDC->TxState) {} //Wait until transfer is done
 	return size;
 }

@@ -11,6 +11,8 @@
 #include <stm32f4_discovery_audio.h>
 #include <math.h>
 
+void VCP_Send(const void *pBuffer);
+
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
@@ -39,12 +41,18 @@ int armsPower;
 int chestPower;
 int activeDuration;
 
-UART_HandleTypeDef huart6;
+UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart2_rx;
+uint8_t rx2Buffer = '\000';
 
 __IO int16_t sample = 0;
 __IO int freq, fs, amplitude, cycle;
 __IO double angle, increment;
 
+volatile char uart_passthrough[100];
+volatile char byte;
+int received = 0;
+int connected = 0;
 int main(void)
 {
 	HAL_Init();
@@ -70,6 +78,7 @@ int main(void)
 	MX_TIM5_Init();
 	MX_TIM9_Init();
 	MX_USART6_UART_Init();
+	MX_USART2_UART_Init();
 	//MX_I2S3_Init();
 	//MX_I2C1_Init();
 	
@@ -83,6 +92,7 @@ int main(void)
 	freq = 1000;
 	fs = 10;
 
+	
 	char byte;
 	for (;;)
 	{
@@ -114,12 +124,21 @@ int main(void)
 		*/
 		RightTrack();
 		LeftTrack();
-		
-		byte = 0;
-		
+		HAL_Delay(500);
+	/*	if (connected == 1 && received == 1)
+		{
+			VCP_Send(&uart_passthrough); 
+			VCP_write("\r\n", 2);
+			HAL_UART_Transmit(&huart2, &uart_passthrough, strlen((uint8_t *)uart_passthrough), 5);
+			received = 0;
+		}*/
+			
+		//byte = 0;
+		//HAL_UART_Transmit(&huart2, (uint8_t*)"Hello world!\r\n", 16, 1000);
 		int size = VCPRxBuffer.Size - VCPRxBuffer.Position;
 		if (size == 8)
 		{
+			connected = 1;
 			// header byte
 			VCP_read(&byte, 1); 						
 			leftTrackForward	= (byte >> 0) & 0x01;
@@ -161,18 +180,18 @@ int main(void)
 			char *chestText[30];
 			char *durationText[30];
 			sprintf((char*)leftTrackText, "Right Track Forward:\t%d, %d\r\n", leftTrackForward, leftTrackPower); 
-			VCP_write(&leftTrackText, strlen((char*)rightTrackText));
+			VCP_Send(&leftTrackText);
 			sprintf((char*)rightTrackText, "Left Track Forward:\t\t%d, %d\r\n", rightTrackForward, rightTrackPower); 
-			VCP_write(&rightTrackText, strlen((char*)rightTrackText));
+			VCP_Send(&rightTrackText);
 			sprintf((char*)torsText, "Torso Forward:\t\t%d, %d\r\n", torsoForward, torsoPower); 
-			VCP_write(&torsText, strlen((char*)torsText));
+			VCP_Send(&torsText);
 			sprintf((char*)armsText, "ArmsOpen:\t\t%d, %d\r\n", armsOpen, armsPower); 
-			VCP_write(&armsText, strlen((char*)armsText));
+			VCP_Send(&armsText);
 			sprintf((char*)chestText, "ChestCW:\t\t%d, %d\r\n", chestCW, chestPower); 
-			VCP_write(&chestText, strlen((char*)chestText));
+			VCP_Send(&chestText);
 			sprintf((char*)durationText, "Duration:\t\t\t\%dms\r\n", activeDuration * 50); 
-			VCP_write(&durationText, strlen((char*)durationText));
-			VCP_write("**********", 10);
+			VCP_Send(&durationText);
+			VCP_Send("**********");
 		}		
 		else if ((size > 0 && size < 6) || size > 6)
 		{
@@ -180,6 +199,106 @@ int main(void)
 			VCP_write("\r\nYou typed: \t", 14);
 			VCP_write(&byte, size);
 			VCP_write("\r\n", 2);
+			VCP_read(&byte, 1);
+		}
+	}
+}
+
+void VCP_Send(const void *pBuffer)
+{
+	VCP_write((uint8_t *)pBuffer, strlen((uint8_t *)pBuffer));
+}
+
+void VCP_Collect(const void *pBuffer)
+{
+	byte = pBuffer;
+}
+
+/* USART2 init function */
+void MX_USART2_UART_Init(void)
+{
+	__GPIOD_CLK_ENABLE();
+	__USART2_CLK_ENABLE();
+	__DMA1_CLK_ENABLE();
+
+	GPIO_InitTypeDef GPIO_InitStruct;
+	GPIO_InitStruct.Pin = GPIO_PIN_5 | GPIO_PIN_6;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+	
+	huart2.Instance = USART2;
+	huart2.Init.BaudRate = 115200;
+	huart2.Init.WordLength = UART_WORDLENGTH_8B;
+	huart2.Init.StopBits = UART_STOPBITS_1;
+	huart2.Init.Parity = UART_PARITY_NONE;
+	huart2.Init.Mode = UART_MODE_TX_RX;
+	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+	HAL_UART_Init(&huart2);
+
+	hdma_usart2_rx.Instance = DMA1_Stream5;
+	hdma_usart2_rx.Init.Channel = DMA_CHANNEL_4;
+	hdma_usart2_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
+	hdma_usart2_rx.Init.PeriphInc = DMA_PINC_DISABLE;
+	hdma_usart2_rx.Init.MemInc = DMA_MINC_DISABLE;
+	hdma_usart2_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+	hdma_usart2_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+	hdma_usart2_rx.Init.Mode = DMA_CIRCULAR;
+	hdma_usart2_rx.Init.Priority = DMA_PRIORITY_LOW;
+	hdma_usart2_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+	HAL_DMA_Init(&hdma_usart2_rx);
+
+	__HAL_LINKDMA(&huart2, hdmarx, hdma_usart2_rx);
+
+	HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+	
+	__HAL_UART_FLUSH_DRREGISTER(&huart2);
+	HAL_UART_Receive_DMA(&huart2, &rx2Buffer, 1);
+}
+
+#define MAXCLISTRING          100 // Biggest string the user will type
+
+volatile uint8_t rx2String[MAXCLISTRING]; // where we build our string from characters coming in
+int rx2index = 0; // index for going though rxString
+void DMA1_Stream5_IRQHandler(void)
+{
+	HAL_NVIC_ClearPendingIRQ(DMA1_Stream5_IRQn);
+	HAL_DMA_IRQHandler(&hdma_usart2_rx);
+}
+
+char x;
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	//__HAL_UART_FLUSH_DRREGISTER(&huart2); // Clear the buffer to prevent overrun 
+	//HAL_UART_Transmit(&huart2, &rx2Buffer, 1, 1000);
+	//x = &rx2Buffer;
+	if (rx2Buffer == '\n') // If Enter
+	{
+		//if (received == 0 && connected)
+		//{
+			for (int i = 0; i < MAXCLISTRING; i++) uart_passthrough[i] = rx2String[i];
+			VCP_Send(&uart_passthrough); 
+			HAL_UART_Transmit(&huart2, &rx2String, strlen((uint8_t *)rx2String), 5);
+			received = 1;
+		//}
+		rx2String[rx2index] = 0;
+		rx2index = 0;
+		for (int i = 0; i < MAXCLISTRING; i++) rx2String[i] = 0; // Clear the string buffer
+	}
+
+	else
+	{
+		rx2String[rx2index] = rx2Buffer; // Add that character to the string
+		rx2index++;
+		if (rx2index > MAXCLISTRING) // User typing too much, we can't have commands that big
+		{
+			rx2index = 0;
+			for (int i = 0; i < MAXCLISTRING; i++) rx2String[i] = 0; // Clear the string buffer
+			//print("\r\nConsole> ");
 		}
 	}
 }

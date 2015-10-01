@@ -421,6 +421,15 @@
     <ClCompile Include="BSP\STM32F4-Discovery\lis3dsh.c">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="wifi.c">
+      <Filter>Source files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\serial.c">
+      <Filter>Source files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\crypto.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\movement.h">
@@ -755,6 +764,15 @@
     </ClInclude>
     <ClInclude Include="BSP\STM32F4-Discovery\lis3dsh.h">
       <Filter>Header files\STM32F4-Discovery</Filter>
+    </ClInclude>
+    <ClInclude Include="API\serial.h">
+      <Filter>Header files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\crypto.h">
+      <Filter>Header files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="HomeRobot.h">
+      <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

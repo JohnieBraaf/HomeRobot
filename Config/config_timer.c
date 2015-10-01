@@ -1,5 +1,7 @@
 #include <config_timer.h>
 #include <stm32f4xx_hal.h>
+#include <config_usb.h>
+#include <HomeRobot.h>
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim3;
@@ -335,6 +337,12 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 
 void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
 {
+	if (huart->Instance == USART2)
+	{
+		__USART2_CLK_DISABLE();
+		HAL_GPIO_DeInit(GPIOD, GPIO_PIN_5 | GPIO_PIN_6);
+	}
+	
 	if (huart->Instance == USART6)
 	{
 		__USART6_CLK_DISABLE();
@@ -356,3 +364,4 @@ void MX_USART6_UART_Init(void)
 	huart6.Init.OverSampling = UART_OVERSAMPLING_16;
 	HAL_HalfDuplex_Init(&huart6);
 }
+
