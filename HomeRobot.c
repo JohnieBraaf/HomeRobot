@@ -49,27 +49,17 @@ __IO int16_t sample = 0;
 __IO int freq, fs, amplitude, cycle;
 __IO double angle, increment;
 
-volatile char uart_passthrough[100];
+#define MAXVCPSTRING          1024 // Biggest string the user will type
+__IO char vcpString[MAXVCPSTRING]; // where we build our string from characters coming in
+__IO int vcpIndex = 0;
+
 volatile char byte;
-int received = 0;
-int connected = 0;
+int waitingForAck = 0;
 int main(void)
 {
 	HAL_Init();
 	SystemClock_Config();
 	USB_CDC_Confg();
-/*
-	PA2:	Torso FW		TIM5_CH3, TIM2_CH3, TIM9_CH1
-	PA3:	Torso BW		TIM5_CH4, TIM2_CH4, TIM9_CH2
-	PB4:	Arms Open		TIM3_CH1
-	PB5:	Arms Close		TIM3_CH2
-	PE5:	Chest CW		TIM9_CH1
-	PE6:	Chest CCW		TIM9_CH2
-	PE9:	Right Track FW	TIM1_CH1
-	PE11:	Right Track BW	TIM1_CH2
-	PE13:	Left Track FW	TIM1_CH3
-	PE14:	Left Track BW	TIM1_CH4
-*/
 	
 	MX_GPIO_Init();
 	MX_TIM1_Init();
@@ -81,19 +71,17 @@ int main(void)
 	MX_USART2_UART_Init();
 	//MX_I2S3_Init();
 	//MX_I2C1_Init();
-	
-	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 100, I2S_AUDIOFREQ_8K);
-		
+			
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
 
+	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 100, I2S_AUDIOFREQ_8K);
 	freq = 1000;
-	fs = 10;
-
-	
+	fs = 10;	
 	char byte;
+	
 	for (;;)
 	{
 		if (Audio_tone == 0) 
@@ -123,19 +111,36 @@ int main(void)
 			BSP_AUDIO_OUT_Play_Direct((uint16_t*)x, 2); 
 		*/
 		RightTrack();
-		LeftTrack();
-		HAL_Delay(500);
-	/*	if (connected == 1 && received == 1)
+		LeftTrack();			
+
+		if (VCP_read(&byte, 1) == 1)
 		{
-			VCP_Send(&uart_passthrough); 
-			VCP_write("\r\n", 2);
-			HAL_UART_Transmit(&huart2, &uart_passthrough, strlen((uint8_t *)uart_passthrough), 5);
-			received = 0;
-		}*/
+			vcpString[vcpIndex] = byte;
+			vcpIndex++;
 			
-		//byte = 0;
-		//HAL_UART_Transmit(&huart2, (uint8_t*)"Hello world!\r\n", 16, 1000);
-		int size = VCPRxBuffer.Size - VCPRxBuffer.Position;
+			//int ret = strcmp(&vcpString, "OK\r\n");
+
+			
+			int ret = strcmp(&byte, "\n");
+			if (ret == 192 || vcpIndex == MAXVCPSTRING)
+			{				
+				ret = strcmp(&vcpString, "123\r\n");
+				if (ret == 0)
+				{
+					char send[5] = "AT\r\n";					
+					HAL_UART_Transmit(&huart2, &send, 4, 5);
+					waitingForAck = 1;
+				} 
+				else
+				{
+					HAL_UART_Transmit(&huart2, &vcpString, vcpIndex, 5);
+				}
+				
+				vcpIndex = 0;
+			}			
+		}
+					
+		/*
 		if (size == 8)
 		{
 			connected = 1;
@@ -201,7 +206,13 @@ int main(void)
 			VCP_write("\r\n", 2);
 			VCP_read(&byte, 1);
 		}
+		*/
 	}
+}
+
+void ProcessCommand(const void *pBuffer)
+{
+	
 }
 
 void VCP_Send(const void *pBuffer)
@@ -260,45 +271,45 @@ void MX_USART2_UART_Init(void)
 	HAL_UART_Receive_DMA(&huart2, &rx2Buffer, 1);
 }
 
-#define MAXCLISTRING          100 // Biggest string the user will type
+#define MAXCLISTRING          1024 // Biggest string the user will type
 
-volatile uint8_t rx2String[MAXCLISTRING]; // where we build our string from characters coming in
-int rx2index = 0; // index for going though rxString
+__IO char rx2String[MAXCLISTRING]; // where we build our string from characters coming in
+__IO char uart_passthrough[MAXCLISTRING];
+__IO int rx2index = 0;
+
 void DMA1_Stream5_IRQHandler(void)
 {
 	HAL_NVIC_ClearPendingIRQ(DMA1_Stream5_IRQn);
 	HAL_DMA_IRQHandler(&hdma_usart2_rx);
 }
 
-char x;
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	//__HAL_UART_FLUSH_DRREGISTER(&huart2); // Clear the buffer to prevent overrun 
-	//HAL_UART_Transmit(&huart2, &rx2Buffer, 1, 1000);
-	//x = &rx2Buffer;
-	if (rx2Buffer == '\n') // If Enter
-	{
-		//if (received == 0 && connected)
-		//{
-			for (int i = 0; i < MAXCLISTRING; i++) uart_passthrough[i] = rx2String[i];
-			VCP_Send(&uart_passthrough); 
-			HAL_UART_Transmit(&huart2, &rx2String, strlen((uint8_t *)rx2String), 5);
-			received = 1;
-		//}
-		rx2String[rx2index] = 0;
-		rx2index = 0;
-		for (int i = 0; i < MAXCLISTRING; i++) rx2String[i] = 0; // Clear the string buffer
-	}
+	__HAL_UART_FLUSH_DRREGISTER(&huart2); 
+	rx2String[rx2index] = rx2Buffer;
+	
+	if (rx2index < MAXCLISTRING-1)
+		rx2index++;		
+	
+	if (rx2index == MAXCLISTRING - 1) 
+		rx2String[rx2index] = '\n';
 
-	else
-	{
-		rx2String[rx2index] = rx2Buffer; // Add that character to the string
-		rx2index++;
-		if (rx2index > MAXCLISTRING) // User typing too much, we can't have commands that big
+	if ((rx2Buffer == '\n' &&  rx2index != 1) || rx2index == MAXCLISTRING-1)
+	{		
+		for (int i=0; i<= rx2index; i++) uart_passthrough[i] = rx2String[i];
+		VCP_write(&uart_passthrough, rx2index); 
+		//HAL_UART_Transmit(&huart2, &uart_passthrough, rx2index, rx2index);	
+		char temp[rx2index];
+		for (int i2 = 0; i2 < rx2index; i2++) temp[i2] = rx2String[i2];
+		int ret = strcmp(&temp, "OK\r\nwl");
+		if (ret != -14 && ret != -66)
+			waitingForAck = 0;
+		
+		if (rx2index == MAXCLISTRING - 1 && rx2Buffer != '\n')
 		{
-			rx2index = 0;
-			for (int i = 0; i < MAXCLISTRING; i++) rx2String[i] = 0; // Clear the string buffer
-			//print("\r\nConsole> ");
+			rx2String[0] = rx2Buffer;
+			rx2index = 1;
 		}
-	}
+		else rx2index = 0;
+	}	
 }
