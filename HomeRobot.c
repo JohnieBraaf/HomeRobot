@@ -96,14 +96,22 @@ int main(void)
 		RightTrack();
 		LeftTrack();			
 		char *x;
-		while (BufferIsEmpty(U2Rx) != 1)
+		if (BufferIsEmpty(U2Rx) != 1)
 		{
-			BufferGet(&U2Rx, &x);
-			VCP_write("1", 1);
-			VCP_write(&x, strlen(&x)); 
+			char *str[U2Rx.count];
+			int index = 0;
+			while (U2Rx.count > 0)
+			{
+				BufferGet(&U2Rx, &x);
+				VCP_write(&x, 1); 				
+				str[index++] = &x;
+			}
+				
+				
+			//BufferGet(&U2Rx, &x);
+			//VCP_write("1", 1);
+			VCP_write(&str, strlen(&str)); 
 		}
-			
-			
 		
 		if (VCP_read(&byte, 1) == 1)
 		{
@@ -225,10 +233,6 @@ void VCP_Collect(const void *pBuffer)
 	byte = pBuffer;
 }
 
-
-
-
-
 void DMA1_Stream5_IRQHandler(void)
 {
 	HAL_NVIC_ClearPendingIRQ(DMA1_Stream5_IRQn);
@@ -243,4 +247,3 @@ uint8_t Usart2Get(void) {
 	BufferGet(&U2Rx, &ch);
 	return ch;
 }
-
