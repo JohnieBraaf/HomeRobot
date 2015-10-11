@@ -2,8 +2,6 @@
 #include "string.h"
 #include "stm32f4xx_hal_uart.h"
 
-extern UART_HandleTypeDef     UartHandle;
-extern uint8_t aEncryptedtext[64];
 
 void USART_puts(UART_HandleTypeDef *usartx, uint8_t *s)
 {
@@ -13,6 +11,7 @@ void USART_puts(UART_HandleTypeDef *usartx, uint8_t *s)
 	}
 }
 
+/*
 char buffer[1024] = { 0 };
 uint16_t data_length = 0;
 
@@ -46,3 +45,4 @@ void USART3_IRQHandler(void)
 		}
 	}
 }
+*/

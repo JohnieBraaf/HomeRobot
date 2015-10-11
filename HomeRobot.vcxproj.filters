@@ -149,6 +149,18 @@
     <Filter Include="Header files\STM32F4-Discovery">
       <UniqueIdentifier>{959e76aa-bb0f-4b42-8876-d7495f23205d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source files\Util">
+      <UniqueIdentifier>{aa010bc4-b29e-4c61-92e9-1d5784368a30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\Util">
+      <UniqueIdentifier>{f144f9b2-cab8-4d00-b015-d260ddd77e37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\Drivers">
+      <UniqueIdentifier>{f203f77d-9883-47c5-8cf7-1a95fa80412d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\Drivers">
+      <UniqueIdentifier>{559af516-e8a2-48b4-9c14-c4b608f491a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API\movement.c">
@@ -427,8 +439,17 @@
     <ClCompile Include="API\serial.c">
       <Filter>Source files\API</Filter>
     </ClCompile>
-    <ClCompile Include="API\crypto.c">
-      <Filter>Source files</Filter>
+    <ClCompile Include="Util\util_string.c">
+      <Filter>Source files\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\util_buffer.c">
+      <Filter>Source files\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\config_usart.c">
+      <Filter>Source files\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\ESP8266.c">
+      <Filter>Source files\Drivers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -768,11 +789,20 @@
     <ClInclude Include="API\serial.h">
       <Filter>Header files\API</Filter>
     </ClInclude>
-    <ClInclude Include="API\crypto.h">
-      <Filter>Header files\API</Filter>
-    </ClInclude>
     <ClInclude Include="HomeRobot.h">
       <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\util_string.h">
+      <Filter>Header files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\util_buffer.h">
+      <Filter>Header files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\config_usart.h">
+      <Filter>Header files\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\ESP8266.h">
+      <Filter>Header files\Drivers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,3 @@
-#define SSID "HFX"
-#define PASSWORD "1122334455"
-#define DST_IP "janstaal.com"
-
-
 
 /*
 void setupWiFi()

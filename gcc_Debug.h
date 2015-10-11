@@ -1089,16 +1089,8 @@
 #endif
 
 // --- Include directories begin --- //
-//CMSIS/Device/ST/STM32F4xx/Include
-//CMSIS/Include
-//STM32F4xx_HAL_Driver/Inc
-//STM32_USB_Device_Library/Core/Inc
-//STM32_USB_Device_Library/Class/CDC/Inc
-//Config
-//USBD
-//API
-//Audio
-//BSP/STM32F4-Discovery
+//config
+//drivers
 //.
 //c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0
 //c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include/c++/5.2.0/arm-eabi/thumb/fpu/cortex_m4
@@ -1107,8 +1099,20 @@
 //c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/include-fixed
 //c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/sys-include
 //c:\sysgcc\arm-eabi\bin\../lib/gcc/arm-eabi/5.2.0/../../../../arm-eabi/include
+//CMSIS/Device/ST/STM32F4xx/Include
+//CMSIS/Include
+//STM32F4xx_HAL_Driver/Inc
+//STM32_USB_Device_Library/Core/Inc
+//STM32_USB_Device_Library/Class/CDC/Inc
+//Config
+//USBD
+//API
 //AI
+//Audio
 //Sensors
+//BSP/STM32F4-Discovery
+//Util
+//Drivers
 // --- Include directories end --- //
 
 

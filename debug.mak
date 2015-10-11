@@ -6,7 +6,7 @@ BINARYDIR := Debug
 
 #Additional flags
 PREPROCESSOR_MACROS := DEBUG USE_USB_FS stm32_flash_layout STM32F407xx
-INCLUDE_DIRS := CMSIS/Device/ST/STM32F4xx/Include CMSIS/Include STM32F4xx_HAL_Driver/Inc STM32_USB_Device_Library/Core/Inc STM32_USB_Device_Library/Class/CDC/Inc Config USBD API AI Audio Sensors BSP/STM32F4-Discovery
+INCLUDE_DIRS := CMSIS/Device/ST/STM32F4xx/Include CMSIS/Include STM32F4xx_HAL_Driver/Inc STM32_USB_Device_Library/Core/Inc STM32_USB_Device_Library/Class/CDC/Inc Config USBD API AI Audio Sensors BSP/STM32F4-Discovery Util Drivers
 LIBRARY_DIRS := 
 LIBRARY_NAMES := 
 ADDITIONAL_LINKER_INPUTS := BSP/STM32F4-Discovery/libPDMFilter_CM4F_GCC.a
