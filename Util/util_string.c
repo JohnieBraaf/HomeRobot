@@ -34,3 +34,25 @@ size_t strdelstr(char *s, const char *search)
 	s[++a] = '\0';
 	return l - a;
 }
+
+/*
+ * get a substring
+ */
+char * substr(char * s, int x, int y)
+{
+	char * ret = malloc(strlen(s) + 1);
+	char * p = ret;
+	char * q = &s[x];
+
+	assert(ret != NULL);
+
+	while (x  < y)
+	{
+		*p++ = *q++;
+		x++; 
+	}
+
+	*p++ = '\0';
+
+	return ret;
+}

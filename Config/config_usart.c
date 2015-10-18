@@ -3,6 +3,7 @@
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_rx;
 __IO FIFO_TypeDef U2Rx, U2Tx;
+__IO FIFO_CommandTypeDef Command2Rx;
 
 uint8_t rx2Buffer = '\000';
 
@@ -61,6 +62,8 @@ void MX_USART2_UART_Init(void)
 	
 	BufferInit(&U2Rx);
 	BufferInit(&U2Tx);
+	
+	CommandBufferInit(&Command2Rx);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)

@@ -25,6 +25,7 @@ int activeDuration;
 extern UART_HandleTypeDef huart2;
 extern DMA_HandleTypeDef hdma_usart2_rx;
 extern __IO FIFO_TypeDef U2Rx, U2Tx;
+extern __IO FIFO_CommandTypeDef Command2Rx;
 
 extern uint8_t rx2Buffer;
 
@@ -64,7 +65,6 @@ int main(void)
 	freq = 1000;
 	fs = 10;	
 	char byte;
-	
 	for (;;)
 	{
 		if (Audio_tone == 0) 
@@ -95,32 +95,20 @@ int main(void)
 		*/
 		RightTrack();
 		LeftTrack();			
-		char *x;
-		if (BufferIsEmpty(U2Rx) != 1)
+
+		
+		while (Command2Rx.count > 0)
 		{
-			char *str[U2Rx.count];
-			int index = 0;
-			while (U2Rx.count > 0)
-			{
-				BufferGet(&U2Rx, &x);
-				VCP_write(&x, 1); 				
-				str[index++] = &x;
-			}
-				
-				
-			//BufferGet(&U2Rx, &x);
-			//VCP_write("1", 1);
-			VCP_write(&str, strlen(&str)); 
+			char *c;
+			c = CommandBufferGet(&Command2Rx, c);
+			VCP_write(c, strlen(c));
 		}
 		
 		if (VCP_read(&byte, 1) == 1)
 		{
 			vcpString[vcpIndex] = byte;
 			vcpIndex++;
-			
-			//int ret = strcmp(&vcpString, "OK\r\n");
 
-			
 			int ret = strcmp(&byte, "\n");
 			if (ret == 192 || vcpIndex == MAXVCPSTRING)
 			{				
@@ -129,15 +117,12 @@ int main(void)
 				{
 					waitingForAck = 1;					
 					HAL_UART_Transmit(&huart2, (char *)"AT\r\n", 4, 5);					
-					while (waitingForAck == 1) {}
+					//while (waitingForAck == 1) {}
 
 					waitingForAck = 1;					
 					HAL_UART_Transmit(&huart2, (char *)"AT+CIFSR\r\n", 10, 5);					
-					while (waitingForAck == 1) {}
-	
-					
-					
-					
+					//while (waitingForAck == 1) {}
+
 				} 
 				else
 				{
@@ -237,13 +222,4 @@ void DMA1_Stream5_IRQHandler(void)
 {
 	HAL_NVIC_ClearPendingIRQ(DMA1_Stream5_IRQn);
 	HAL_DMA_IRQHandler(&hdma_usart2_rx);
-}
-
-uint8_t Usart2Get(void) {
-	uint8_t ch;
-	//check if buffer is empty
-	while (BufferIsEmpty(U2Rx) == SUCCESS)
-		;
-	BufferGet(&U2Rx, &ch);
-	return ch;
 }
