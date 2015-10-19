@@ -16,7 +16,7 @@ ErrorStatus BufferPut(__IO FIFO_TypeDef *buffer, uint8_t ch)
 	if (strncmp(&ch, "\n", 1) == 0)
 	{
 		int size = buffer->in - buffer->out;
-		if (buffer->in < buffer->out) size = buffer->out - buffer->in;
+		if (buffer->in < buffer->out) size = buffer->out - buffer->in + 1;
 		char comm[size + 2];
 		for (int i = 0; i < size; i++)
 		{

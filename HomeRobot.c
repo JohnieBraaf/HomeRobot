@@ -96,15 +96,36 @@ int main(void)
 		RightTrack();
 		LeftTrack();			
 
-		
 		while (Command2Rx.count > 0)
 		{
 			char *c;
 			c = CommandBufferGet(&Command2Rx, c);
 			VCP_write(c, strlen(c));
+		
+			char *val = substrdelim(c, "\"");
+			VCP_write(val, strlen(val));	
+			
+			if (strncmp(c, "OK\r\n", 4) == 0) 
+			{
+				waitingForAck = 0;
+			}
+			else if (strncmp(c, "ERROR\r\n", 7) == 0)
+			{
+				waitingForAck = 2;
+			}
+			
+			if (strncmp(c, "+", 1) == 0) 
+			{
+					
+			}
 		}
 		
-		if (VCP_read(&byte, 1) == 1)
+		if (waitingForAck != 1)
+		{
+			
+		}
+		
+		if (VCP_read(&byte, 1) == 1 )
 		{
 			vcpString[vcpIndex] = byte;
 			vcpIndex++;

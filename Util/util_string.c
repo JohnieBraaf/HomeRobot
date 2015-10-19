@@ -56,3 +56,34 @@ char * substr(char * s, int x, int y)
 
 	return ret;
 }
+
+/*
+ * get a substring based on a the first and second occurance of a delimiter
+ */
+char *substrdelim(char *string, char *delimiter)
+{
+	if (*string != NULL)
+	{
+		int index1 = 0, index2 = 0, cnt = 0;
+		for (int i = 0; string[i] != '\0'; i++) {
+			if (strncmp(&string[i], delimiter, 1) == 0)
+			{
+				if (cnt == 0) 
+				{
+					index1 = i;
+					cnt++;
+				}
+				else {
+					index2 = i;	
+					break;
+				}
+			}
+		}
+		
+		if (index2 > 0)
+		{
+			return substr(string, index1, index2);
+		}
+	}
+	return "";
+}
