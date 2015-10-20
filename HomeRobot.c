@@ -25,7 +25,8 @@ int activeDuration;
 extern UART_HandleTypeDef huart2;
 extern DMA_HandleTypeDef hdma_usart2_rx;
 extern __IO FIFO_TypeDef U2Rx, U2Tx;
-extern __IO FIFO_RXResponseTypeDef Command2Rx;
+extern __IO FIFO_RXResponseTypeDef Response2Rx;
+extern __IO FIFO_TXCommandTypeDef Command2Tx;
 
 extern uint8_t rx2Buffer;
 
@@ -65,6 +66,7 @@ int main(void)
 	freq = 1000;
 	fs = 10;	
 	char byte;
+	
 	for (;;)
 	{
 		if (Audio_tone == 0) 
@@ -96,29 +98,31 @@ int main(void)
 		RightTrack();
 		LeftTrack();			
 
-		while (Command2Rx.count > 0)
+		if (Response2Rx.count > 0)
 		{
-			char *c;
-			c = RXResponseBufferGet(&Command2Rx, c);
-			VCP_write(c, strlen(c));
+			char *response = RXResponseBufferGet(&Response2Rx, response);
+			VCP_write(response, strlen(response));
 		
-			char *val = substrdelim(c, "\"");
+			char *val = substrdelim(response, "\"");
 			//VCP_write(val, strlen(val));	
 			
-			if (strncmp(c, "OK\r\n", 4) == 0) 
-			{
+			if (strncmp(response, "OK", 2) == 0) 
 				waitingForAck = 0;
-			}
-			else if (strncmp(c, "ERROR\r\n", 7) == 0)
-			{
-				waitingForAck = 2;
-			}
-			
-			if (strncmp(c, "+", 1) == 0) 
+			else if (strncmp(response, "ERROR\r\n", 7) == 0)
+				waitingForAck = 2;		
+			else if (strncmp(response, "+", 1) == 0) 
 			{
 					
-			}
+			}			
 		}
+		
+		if (Command2Tx.count > 0 && waitingForAck != 1)
+		{
+			char *command = TXCommandBufferGet(&Command2Tx, command);
+			HAL_UART_Transmit(&huart2, (char *)command, strlen(command), 5);
+			if (Command2Tx.bits[Command2Tx.out] == 1)
+				waitingForAck = 1;
+		} 
 		
 		if (waitingForAck != 1)
 		{
@@ -130,20 +134,21 @@ int main(void)
 			vcpString[vcpIndex] = byte;
 			vcpIndex++;
 
-			int ret = strcmp(&byte, "\n");
-			if (ret == 192 || vcpIndex == MAXVCPSTRING)
+			if (strncmp(&byte, "\n", 1) == 0 || vcpIndex == MAXVCPSTRING)
 			{				
-				ret = strncmp(&vcpString, "123\r\n", 5);
-				if (ret == 0)
-				{
-					waitingForAck = 1;					
-					HAL_UART_Transmit(&huart2, (char *)"AT\r\n", 4, 5);					
-					//while (waitingForAck == 1) {}
-
-					waitingForAck = 1;					
-					HAL_UART_Transmit(&huart2, (char *)"AT+CIFSR\r\n", 10, 5);					
-					//while (waitingForAck == 1) {}
-
+				if (strncmp(&vcpString, "123\r\n", 5) == 0)
+				{					
+					TXCommandBufferPut(&Command2Tx, "AT\r\n", 1);					
+					TXCommandBufferPut(&Command2Tx, "AT+CIFSR\r\n", 1);
+				}
+				if (strncmp(&vcpString, "456\r\n", 5) == 0)
+				{					
+					TXCommandBufferPut(&Command2Tx, "AT\r\n", 1);					
+					TXCommandBufferPut(&Command2Tx, "AT+CIPSTART=\"TCP\",\"www.google.com\",80\r\n", 1);
+					TXCommandBufferPut(&Command2Tx, "AT+CIPSEND=42\r\n", 1);
+					TXCommandBufferPut(&Command2Tx, "GET / HTTP/1.1\r\n", 0);
+					TXCommandBufferPut(&Command2Tx, "Host: www.google.com\r\n\r\n\r\n", 0);
+					TXCommandBufferPut(&Command2Tx, "AT+CIPCLOSE\r\n", 1);
 				} 
 				else
 				{

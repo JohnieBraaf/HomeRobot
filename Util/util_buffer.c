@@ -7,7 +7,7 @@ void BufferInit(__IO FIFO_TypeDef *buffer)
 	buffer->out = 0;//index points to start
 }
 
-extern __IO FIFO_RXResponseTypeDef Command2Rx;
+extern __IO FIFO_RXResponseTypeDef Response2Rx;
 ErrorStatus BufferPut(__IO FIFO_TypeDef *buffer, uint8_t ch)
 {
 	if (buffer->count == USARTBUFFSIZE)
@@ -24,7 +24,7 @@ ErrorStatus BufferPut(__IO FIFO_TypeDef *buffer, uint8_t ch)
 		}
 		comm[size] = '\n';
 		comm[size + 1] = '\0';
-		RXResponseBufferPut(&Command2Rx, &comm, strlen(&comm));
+		RXResponseBufferPut(&Response2Rx, &comm);
 	}
 	else
 	{
@@ -65,7 +65,7 @@ void RXResponseBufferInit(__IO FIFO_RXResponseTypeDef *buffer)
 	buffer->out = 0;//index points to start
 }
 
-ErrorStatus RXResponseBufferPut(__IO FIFO_RXResponseTypeDef *buffer, char *comm, uint8_t size)
+ErrorStatus RXResponseBufferPut(__IO FIFO_RXResponseTypeDef *buffer, char *comm)
 {
 	if (buffer->count == RXRESPONSEBUFFSIZE)
 		return ERROR;//buffer full
@@ -88,6 +88,43 @@ char *RXResponseBufferGet(__IO FIFO_RXResponseTypeDef *buffer, char *comm)
 }
 
 ErrorStatus RXResponseBufferIsEmpty(__IO FIFO_RXResponseTypeDef buffer)
+{
+	if (buffer.count == 0)
+		return SUCCESS;//buffer full
+	return ERROR;
+}
+
+void TXCommandBufferInit(__IO FIFO_TXCommandTypeDef *buffer)
+{
+	buffer->count = 0;//0 bytes in buffer
+	buffer->in = 0;//index points to start
+	buffer->out = 0;//index points to start
+}
+
+ErrorStatus TXCommandBufferPut(__IO FIFO_TXCommandTypeDef *buffer, char *comm, char bits)
+{
+	if (buffer->count == TXCOMMANDBUFFSIZE)
+		return ERROR;//buffer full
+	buffer->bits[buffer->in] = bits;
+	buffer->TXCommand[buffer->in++] = strdup(comm);
+	buffer->count++;
+	if (buffer->in == TXCOMMANDBUFFSIZE)
+		buffer->in = 0;//start from beginning
+	return SUCCESS;
+}
+
+char *TXCommandBufferGet(__IO FIFO_TXCommandTypeDef *buffer, char *comm)
+{
+	if (buffer->count == 0)
+		return "";
+	comm = strdup(buffer->TXCommand[buffer->out++]);
+	buffer->count--;
+	if (buffer->out == TXCOMMANDBUFFSIZE)
+		buffer->out = 0;//start from beginning
+	return comm;
+}
+
+ErrorStatus TXCommandBufferIsEmpty(__IO FIFO_TXCommandTypeDef buffer)
 {
 	if (buffer.count == 0)
 		return SUCCESS;//buffer full

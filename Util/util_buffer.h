@@ -4,6 +4,7 @@
 
 #define USARTBUFFSIZE 1024
 #define RXRESPONSEBUFFSIZE 50
+#define TXCOMMANDBUFFSIZE 50
 
 typedef struct {
 	uint16_t in;
@@ -25,6 +26,19 @@ typedef struct {
 }FIFO_RXResponseTypeDef;
 
 void RXResponseBufferInit(__IO FIFO_RXResponseTypeDef*);
-ErrorStatus RXResponseBufferPut(__IO FIFO_RXResponseTypeDef*, char*, uint8_t);
+ErrorStatus RXResponseBufferPut(__IO FIFO_RXResponseTypeDef*, char*);
 char *RXResponseBufferGet(__IO FIFO_RXResponseTypeDef*, char*);
 ErrorStatus RXResponseBufferIsEmpty(__IO FIFO_RXResponseTypeDef buffer);
+
+typedef struct {
+	uint8_t in;
+	uint8_t out;
+	uint8_t count;
+	char bits[TXCOMMANDBUFFSIZE];
+	char *TXCommand[TXCOMMANDBUFFSIZE];
+}FIFO_TXCommandTypeDef;
+
+void TXCommandBufferInit(__IO FIFO_TXCommandTypeDef*);
+ErrorStatus TXCommandBufferPut(__IO FIFO_TXCommandTypeDef*, char*, char);
+char *TXCommandBufferGet(__IO FIFO_TXCommandTypeDef*, char*);
+ErrorStatus TXCommandBufferIsEmpty(__IO FIFO_TXCommandTypeDef buffer);
