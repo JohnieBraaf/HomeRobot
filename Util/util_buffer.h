@@ -2,13 +2,13 @@
 #include <stm32f4xx_hal.h>
 #include <string.h>
 
-#define USARTBUFFSIZE 100
-#define COMMANDBUFFSIZE 50
+#define USARTBUFFSIZE 1024
+#define RXRESPONSEBUFFSIZE 50
 
 typedef struct {
-	uint8_t in;
-	uint8_t out;
-	uint8_t count;
+	uint16_t in;
+	uint16_t out;
+	uint16_t count;
 	uint8_t buff[USARTBUFFSIZE];
 }FIFO_TypeDef;
 
@@ -21,10 +21,10 @@ typedef struct {
 	uint8_t in;
 	uint8_t out;
 	uint8_t count;
-	char *command[COMMANDBUFFSIZE];
-}FIFO_CommandTypeDef;
+	char *RXResponse[RXRESPONSEBUFFSIZE];
+}FIFO_RXResponseTypeDef;
 
-void CommandBufferInit(__IO FIFO_CommandTypeDef*);
-ErrorStatus CommandBufferPut(__IO FIFO_CommandTypeDef*, char*, uint8_t);
-char *CommandBufferGet(__IO FIFO_CommandTypeDef*, char*);
-ErrorStatus CommandBufferIsEmpty(__IO FIFO_CommandTypeDef buffer);
+void RXResponseBufferInit(__IO FIFO_RXResponseTypeDef*);
+ErrorStatus RXResponseBufferPut(__IO FIFO_RXResponseTypeDef*, char*, uint8_t);
+char *RXResponseBufferGet(__IO FIFO_RXResponseTypeDef*, char*);
+ErrorStatus RXResponseBufferIsEmpty(__IO FIFO_RXResponseTypeDef buffer);

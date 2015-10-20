@@ -25,7 +25,7 @@ int activeDuration;
 extern UART_HandleTypeDef huart2;
 extern DMA_HandleTypeDef hdma_usart2_rx;
 extern __IO FIFO_TypeDef U2Rx, U2Tx;
-extern __IO FIFO_CommandTypeDef Command2Rx;
+extern __IO FIFO_RXResponseTypeDef Command2Rx;
 
 extern uint8_t rx2Buffer;
 
@@ -33,8 +33,8 @@ __IO int16_t sample = 0;
 __IO int freq, fs, amplitude, cycle;
 __IO double angle, increment;
 
-#define MAXVCPSTRING          1024 // Biggest string the user will type
-__IO char vcpString[MAXVCPSTRING]; // where we build our string from characters coming in
+#define MAXVCPSTRING 1024 
+__IO char vcpString[MAXVCPSTRING];
 __IO int vcpIndex = 0;
 
 volatile char byte;
@@ -99,11 +99,11 @@ int main(void)
 		while (Command2Rx.count > 0)
 		{
 			char *c;
-			c = CommandBufferGet(&Command2Rx, c);
+			c = RXResponseBufferGet(&Command2Rx, c);
 			VCP_write(c, strlen(c));
 		
 			char *val = substrdelim(c, "\"");
-			VCP_write(val, strlen(val));	
+			//VCP_write(val, strlen(val));	
 			
 			if (strncmp(c, "OK\r\n", 4) == 0) 
 			{

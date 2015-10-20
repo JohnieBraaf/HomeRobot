@@ -7,7 +7,7 @@ void BufferInit(__IO FIFO_TypeDef *buffer)
 	buffer->out = 0;//index points to start
 }
 
-extern __IO FIFO_CommandTypeDef Command2Rx;
+extern __IO FIFO_RXResponseTypeDef Command2Rx;
 ErrorStatus BufferPut(__IO FIFO_TypeDef *buffer, uint8_t ch)
 {
 	if (buffer->count == USARTBUFFSIZE)
@@ -24,7 +24,7 @@ ErrorStatus BufferPut(__IO FIFO_TypeDef *buffer, uint8_t ch)
 		}
 		comm[size] = '\n';
 		comm[size + 1] = '\0';
-		CommandBufferPut(&Command2Rx, &comm, strlen(&comm));
+		RXResponseBufferPut(&Command2Rx, &comm, strlen(&comm));
 	}
 	else
 	{
@@ -58,36 +58,36 @@ ErrorStatus BufferIsEmpty(__IO FIFO_TypeDef buffer)
 	return ERROR;
 }
 
-void CommandBufferInit(__IO FIFO_CommandTypeDef *buffer)
+void RXResponseBufferInit(__IO FIFO_RXResponseTypeDef *buffer)
 {
 	buffer->count = 0;//0 bytes in buffer
 	buffer->in = 0;//index points to start
 	buffer->out = 0;//index points to start
 }
 
-ErrorStatus CommandBufferPut(__IO FIFO_CommandTypeDef *buffer, char *comm, uint8_t size)
+ErrorStatus RXResponseBufferPut(__IO FIFO_RXResponseTypeDef *buffer, char *comm, uint8_t size)
 {
-	if (buffer->count == COMMANDBUFFSIZE)
+	if (buffer->count == RXRESPONSEBUFFSIZE)
 		return ERROR;//buffer full
-	buffer->command[buffer->in++] = strdup(comm);
+	buffer->RXResponse[buffer->in++] = strdup(comm);
 	buffer->count++;
-	if (buffer->in == COMMANDBUFFSIZE)
+	if (buffer->in == RXRESPONSEBUFFSIZE)
 		buffer->in = 0;//start from beginning
 	return SUCCESS;
 }
 
-char *CommandBufferGet(__IO FIFO_CommandTypeDef *buffer, char *comm)
+char *RXResponseBufferGet(__IO FIFO_RXResponseTypeDef *buffer, char *comm)
 {
 	if (buffer->count == 0)
 		return "";
-	comm = strdup(buffer->command[buffer->out++]);
+	comm = strdup(buffer->RXResponse[buffer->out++]);
 	buffer->count--;
-	if (buffer->out == COMMANDBUFFSIZE)
+	if (buffer->out == RXRESPONSEBUFFSIZE)
 		buffer->out = 0;//start from beginning
 	return comm;
 }
 
-ErrorStatus CommandBufferIsEmpty(__IO FIFO_CommandTypeDef buffer)
+ErrorStatus RXResponseBufferIsEmpty(__IO FIFO_RXResponseTypeDef buffer)
 {
 	if (buffer.count == 0)
 		return SUCCESS;//buffer full
