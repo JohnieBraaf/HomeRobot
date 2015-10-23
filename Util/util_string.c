@@ -58,7 +58,7 @@ char * substr(char * s, int x, int y)
 }
 
 /*
- * get a substring based on a the first and second occurance of a delimiter
+ * get a substring based on the first and second occurance of a delimiter
  */
 char *substrdelim(char *string, char *delimiter)
 {
@@ -83,6 +83,47 @@ char *substrdelim(char *string, char *delimiter)
 		if (index2 > 0)
 		{
 			return substr(string, index1, index2);
+		}
+	}
+	return "";
+}
+
+/*
+ * get a substring based on a the first and second delimiter
+ */
+char *substrdelim2(char *string, char *delimiter1, char *delimiter2)
+{
+	if (*string != NULL)
+	{
+		int index1 = 0, index2 = 0, cnt = 0;
+		for (int i = 0; string[i] != '\0'; i++) {
+			if (strncmp(&string[i], delimiter1, 1) == 0 && cnt == 0)
+			{
+				index1 = i;
+				cnt++;
+				if (index2 > 0)
+					break;
+			}
+			
+			else if (strncmp(&string[i], delimiter2, 1) == 0 && index2 == 0)
+			{
+				index2 = i;
+				if (cnt > 0)
+					break;
+			}
+		}
+		
+		if (index2 > index1)
+		{
+			int num = index2 - index1 - 1;
+			char str[num + 1];
+
+			for (int i = 0; i < num; i++)
+			{
+				str[i] = string[index1 + 1 + i];//substr(string, index1, index2);
+			}
+			str[num] = '\0';
+			return strdup(str);
 		}
 	}
 	return "";

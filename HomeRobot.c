@@ -30,6 +30,8 @@ extern __IO FIFO_TXCommandTypeDef Command2Tx;
 
 extern uint8_t rx2Buffer;
 
+struct ESPNetwork network;
+
 __IO int16_t sample = 0;
 __IO int freq, fs, amplitude, cycle;
 __IO double angle, increment;
@@ -40,6 +42,7 @@ __IO int vcpIndex = 0;
 
 volatile char byte;
 extern int waitingForAck;
+int waitingForBytes;
 int main(void)
 {
 	HAL_Init();
@@ -57,6 +60,11 @@ int main(void)
 	//MX_I2S3_Init();
 	//MX_I2C1_Init();
 			
+	network.apIP = "0.0.0.0";
+	network.apMAC = "00:00:00:00:00";
+	network.stationIP = "0.0.0.0";
+	network.stationMAC = "00:00:00:00";
+	
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
@@ -66,7 +74,7 @@ int main(void)
 	freq = 1000;
 	fs = 10;	
 	char byte;
-	
+	int byteCounter = -1;
 	for (;;)
 	{
 		if (Audio_tone == 0) 
@@ -104,30 +112,67 @@ int main(void)
 			VCP_write(response, strlen(response));
 		
 			char *val = substrdelim(response, "\"");
-			//VCP_write(val, strlen(val));	
 			
+			if (waitingForBytes == 1 && byteCounter > -1)
+			{
+				// decrement number of bytes
+				if (byteCounter > 0) 
+					byteCounter = byteCounter - strlen(response);
+				else if (byteCounter == 0) 
+					byteCounter = -1;
+				
+				// flag if bytes received
+				if (byteCounter == 0)
+					waitingForBytes = 0;
+				else if (byteCounter < 0)
+					waitingForBytes = 2;
+			}
+						
+			char *rightTrackText[30];
+			sprintf((char*)rightTrackText, "\r\nvalue:\t\t%d\r\n", byteCounter); 
+			VCP_Send(&rightTrackText);
+						
 			if (strncmp(response, "OK", 2) == 0) 
 				waitingForAck = 0;
 			else if (strncmp(response, "ERROR\r\n", 7) == 0)
 				waitingForAck = 2;		
 			else if (strncmp(response, "+", 1) == 0) 
 			{
-					
+				if (strncmp(response, "+CIFSR:APIP", 11) == 0)
+				{
+					network.apIP = substrdelim(response, "\"");
+				}
+				else if (strncmp(response, "+CIFSR:APMAC", 12) == 0)
+				{
+					network.apMAC = substrdelim(response, "\"");
+				}
+				else if (strncmp(response, "+CIFSR:STAIP", 12) == 0)
+				{
+					network.stationIP = substrdelim(response, "\"");
+				}
+				else if (strncmp(response, "+CIFSR:STAMAC", 13) == 0)
+				{
+					network.stationMAC = substrdelim(response, "\"");
+				}
+				else if (strncmp(response, "+IPD", 4) == 0)
+				{
+					char *value = substrdelim2(response, ",", ":");
+					byteCounter = atoi(value) - strlen(response) + strlen(value) + 6; // 6: "+IPD,:"	
+					waitingForBytes = 1;
+					VCP_write("WAITING\r\n", 9);
+				}
 			}			
 		}
 		
-		if (Command2Tx.count > 0 && waitingForAck != 1)
+		if (Command2Tx.count > 0 && waitingForAck != 1 && waitingForBytes != 1)
 		{
 			char *command = TXCommandBufferGet(&Command2Tx, command);
 			HAL_UART_Transmit(&huart2, (char *)command, strlen(command), 5);
 			if (Command2Tx.bits[Command2Tx.out] == 1)
 				waitingForAck = 1;
+			if (Command2Tx.bits[Command2Tx.out-1] == 2)
+				waitingForBytes = 1;
 		} 
-		
-		if (waitingForAck != 1)
-		{
-			
-		}
 		
 		if (VCP_read(&byte, 1) == 1 )
 		{
@@ -147,11 +192,12 @@ int main(void)
 					TXCommandBufferPut(&Command2Tx, "AT+CIPSTART=\"TCP\",\"www.google.com\",80\r\n", 1);
 					TXCommandBufferPut(&Command2Tx, "AT+CIPSEND=42\r\n", 1);
 					TXCommandBufferPut(&Command2Tx, "GET / HTTP/1.1\r\n", 0);
-					TXCommandBufferPut(&Command2Tx, "Host: www.google.com\r\n\r\n\r\n", 0);
-					TXCommandBufferPut(&Command2Tx, "AT+CIPCLOSE\r\n", 1);
+					TXCommandBufferPut(&Command2Tx, "Host: www.google.com\r\n\r\n\r\n", 2);
+					TXCommandBufferPut(&Command2Tx, "AT+CIPCLOSE\r\n", 0);
 				} 
 				else
 				{
+					VCP_Send(&vcpString);
 					HAL_UART_Transmit(&huart2, &vcpString, vcpIndex, 5);
 				}
 				
