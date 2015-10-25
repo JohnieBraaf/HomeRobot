@@ -82,7 +82,7 @@ USBD_CDC_ItfTypeDef USBD_CDC_HomeRobot_fops =
 
 USBD_CDC_LineCodingTypeDef linecoding =
   {
-    115200, /* baud rate*/
+    57600, /* baud rate*/
     0x00,   /* stop bits-1*/
     0x00,   /* parity - none*/
     0x08    /* nb. of bits 8*/

@@ -16,7 +16,7 @@ ErrorStatus BufferPut(__IO FIFO_TypeDef *buffer, uint8_t ch)
 	if (strncmp(&ch, "\n", 1) == 0)
 	{
 		int size = buffer->in - buffer->out;
-		if (buffer->in < buffer->out) size = buffer->out - buffer->in + 1;
+		if (buffer->in < buffer->out) size = buffer->out - buffer->in;
 		char comm[size + 2];
 		for (int i = 0; i < size; i++)
 		{
@@ -24,13 +24,18 @@ ErrorStatus BufferPut(__IO FIFO_TypeDef *buffer, uint8_t ch)
 		}
 		comm[size] = '\n';
 		comm[size + 1] = '\0';
-		RXResponseBufferPut(&Response2Rx, &comm);
+		RXResponseBufferPut(&Response2Rx, comm);
+		
+		buffer->buff[buffer->in++] = ch;
+		if (buffer->in == USARTBUFFSIZE - 1)
+			buffer->in = 0;//start from beginning	
+		buffer->out = buffer->in;
 	}
 	else
 	{
 		buffer->buff[buffer->in++] = ch;
 		buffer->count++;
-		if (buffer->in == USARTBUFFSIZE)
+		if (buffer->in == USARTBUFFSIZE - 1)
 			buffer->in = 0;//start from beginning
 	}	
 	return SUCCESS;
@@ -43,10 +48,10 @@ uint8_t BufferGet(__IO FIFO_TypeDef *buffer)
 	
 	buffer->count--;
 	
-	if (buffer->out++ == USARTBUFFSIZE -1)
+	if (buffer->out++ == USARTBUFFSIZE -2)
 		buffer->out = 0;//start from beginning
 	
-	if (buffer->out == 0) return buffer->buff[USARTBUFFSIZE-1];
+	if (buffer->out == 0) return buffer->buff[USARTBUFFSIZE-2];
 	else return buffer->buff[buffer->out-1];
 	
 }

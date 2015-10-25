@@ -1,4 +1,5 @@
 #pragma once
+#include <HomeRobot.h>
 
 struct ESPNetwork
 {
@@ -7,3 +8,6 @@ struct ESPNetwork
 	char *stationIP;
 	char *stationMAC;
 };
+
+void UpdateESP(void);
+void InitESP(void);

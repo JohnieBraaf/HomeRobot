@@ -41,8 +41,7 @@ __IO char vcpString[MAXVCPSTRING];
 __IO int vcpIndex = 0;
 
 volatile char byte;
-extern int waitingForAck;
-int waitingForBytes;
+
 int main(void)
 {
 	HAL_Init();
@@ -105,100 +104,47 @@ int main(void)
 		*/
 		RightTrack();
 		LeftTrack();			
-
-		if (Response2Rx.count > 0)
-		{
-			char *response = RXResponseBufferGet(&Response2Rx, response);
-			VCP_write(response, strlen(response));
-		
-			char *val = substrdelim(response, "\"");
+		UpdateESP();
 			
-			if (waitingForBytes == 1 && byteCounter > -1)
-			{
-				// decrement number of bytes
-				if (byteCounter > 0) 
-					byteCounter = byteCounter - strlen(response);
-				else if (byteCounter == 0) 
-					byteCounter = -1;
-				
-				// flag if bytes received
-				if (byteCounter == 0)
-					waitingForBytes = 0;
-				else if (byteCounter < 0)
-					waitingForBytes = 2;
-			}
-						
-			char *rightTrackText[30];
-			sprintf((char*)rightTrackText, "\r\nvalue:\t\t%d\r\n", byteCounter); 
-			VCP_Send(&rightTrackText);
-						
-			if (strncmp(response, "OK", 2) == 0) 
-				waitingForAck = 0;
-			else if (strncmp(response, "ERROR\r\n", 7) == 0)
-				waitingForAck = 2;		
-			else if (strncmp(response, "+", 1) == 0) 
-			{
-				if (strncmp(response, "+CIFSR:APIP", 11) == 0)
-				{
-					network.apIP = substrdelim(response, "\"");
-				}
-				else if (strncmp(response, "+CIFSR:APMAC", 12) == 0)
-				{
-					network.apMAC = substrdelim(response, "\"");
-				}
-				else if (strncmp(response, "+CIFSR:STAIP", 12) == 0)
-				{
-					network.stationIP = substrdelim(response, "\"");
-				}
-				else if (strncmp(response, "+CIFSR:STAMAC", 13) == 0)
-				{
-					network.stationMAC = substrdelim(response, "\"");
-				}
-				else if (strncmp(response, "+IPD", 4) == 0)
-				{
-					char *value = substrdelim2(response, ",", ":");
-					byteCounter = atoi(value) - strlen(response) + strlen(value) + 6; // 6: "+IPD,:"	
-					waitingForBytes = 1;
-					VCP_write("WAITING\r\n", 9);
-				}
-			}			
-		}
-		
-		if (Command2Tx.count > 0 && waitingForAck != 1 && waitingForBytes != 1)
-		{
-			char *command = TXCommandBufferGet(&Command2Tx, command);
-			HAL_UART_Transmit(&huart2, (char *)command, strlen(command), 5);
-			if (Command2Tx.bits[Command2Tx.out] == 1)
-				waitingForAck = 1;
-			if (Command2Tx.bits[Command2Tx.out-1] == 2)
-				waitingForBytes = 1;
-		} 
-		
 		if (VCP_read(&byte, 1) == 1 )
 		{
 			vcpString[vcpIndex] = byte;
 			vcpIndex++;
-
+	
 			if (strncmp(&byte, "\n", 1) == 0 || vcpIndex == MAXVCPSTRING)
 			{				
-				if (strncmp(&vcpString, "123\r\n", 5) == 0)
+				char command[vcpIndex + 1];
+				for (int i = 0; i < vcpIndex; i++)
+				{
+					command[i] = vcpString[i];
+				}
+				command[vcpIndex] = '\0';
+				
+				if (strncmp(&command, "123\r\n", 5) == 0)
 				{					
 					TXCommandBufferPut(&Command2Tx, "AT\r\n", 1);					
 					TXCommandBufferPut(&Command2Tx, "AT+CIFSR\r\n", 1);
 				}
-				if (strncmp(&vcpString, "456\r\n", 5) == 0)
+				else if (strncmp(&command, "456\r\n", 5) == 0)
 				{					
-					TXCommandBufferPut(&Command2Tx, "AT\r\n", 1);					
+					//TXCommandBufferPut(&Command2Tx, "AT\r\n", 1);					
 					TXCommandBufferPut(&Command2Tx, "AT+CIPSTART=\"TCP\",\"www.google.com\",80\r\n", 1);
 					TXCommandBufferPut(&Command2Tx, "AT+CIPSEND=42\r\n", 1);
 					TXCommandBufferPut(&Command2Tx, "GET / HTTP/1.1\r\n", 0);
 					TXCommandBufferPut(&Command2Tx, "Host: www.google.com\r\n\r\n\r\n", 2);
 					TXCommandBufferPut(&Command2Tx, "AT+CIPCLOSE\r\n", 0);
 				} 
+				else if (strncmp(&command, "Start Server\r\n", 14) == 0)
+				{					
+					TXCommandBufferPut(&Command2Tx, "AT\r\n", 1);					
+					TXCommandBufferPut(&Command2Tx, "AT+CIPMUX=1\r\n", 1);
+					TXCommandBufferPut(&Command2Tx, "AT+CIPSERVER=1,80\r\n", 1);
+				} 
 				else
 				{
-					VCP_Send(&vcpString);
-					HAL_UART_Transmit(&huart2, &vcpString, vcpIndex, 5);
+					//VCP_Send(&vcpString);
+					//TXCommandBufferPut(&Command2Tx, &vcpString, 1);
+					HAL_UART_Transmit(&huart2, &command, vcpIndex, 5);
 				}
 				
 				vcpIndex = 0;
@@ -273,11 +219,6 @@ int main(void)
 		}
 		*/
 	}
-}
-
-void ProcessCommand(const void *pBuffer)
-{
-	
 }
 
 void VCP_Send(const void *pBuffer)
