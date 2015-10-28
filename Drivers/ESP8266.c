@@ -1,83 +1,71 @@
 #include <ESP8266.h>
 
-struct ESPNetwork network;
-uint8_t status = 0;
-uint8_t waitingForEvent = 0;
-uint16_t byteCounter = 0;
+char *ipAddress;
 
 extern UART_HandleTypeDef huart2;
 extern __IO FIFO_RXResponseTypeDef Response2Rx;
 extern __IO FIFO_TXCommandTypeDef Command2Tx;
 
-void InitESP(void)
-{
-	status = 1;
-	
-	
-}
+int rightTrackPower;
+int leftTrackPower;
+int torsoPower;
+int armsPower;
+int chestPower;
+
+extern __IO uint32_t LeftTrack_RemainActive;
+extern __IO uint32_t RightTrack_RemainActive;
+extern __IO uint32_t Torso_RemainActive;
+extern __IO uint32_t Arms_RemainActive;
+extern __IO uint32_t Chest_RemainActive;
 
 void UpdateESP(void)
 {
-	//if (status == 0) InitESP();
-	
 	while (Response2Rx.count > 0)
 	{
 		char *response = RXResponseBufferGet(&Response2Rx, response);
 		VCP_Send(response);
 		
-		char *val = substrdelim(response, "\"");
-			
-		if (waitingForEvent == 2 && byteCounter > 0)
+		if (strncmp(response, ">", 1) == 0)
 		{
-			// decrement number of bytes
-			byteCounter = byteCounter - (strlen(response) > byteCounter ? 0 : strlen(response));	
-			if (byteCounter == 0)
-				waitingForEvent = 0;
+			char** tokens = str_split(response, ';');
+			if (tokens)
+			{
+				int i;
+				for (i = 0; *(tokens + i); i++)
+				{
+					char* val = *(tokens + i);
+					switch (i) 
+					{
+						case 0:
+							val = *(tokens + i) + 1; // strip first char
+							leftTrackPower = atoi(val);
+							LeftTrack_RemainActive = 500;
+							break;
+						case 1 :
+							rightTrackPower = atoi(val);
+							RightTrack_RemainActive = 500;
+							break;
+						case 2 :
+							torsoPower = atoi(val);
+							Torso_RemainActive = 500;
+							break;
+						}
+					
+					VCP_Send(val);
+					VCP_Send("\n");
+					
+					free(*(tokens + i));
+				}			
+				free(tokens);
+			}
 		}
-		
-		char *rightTrackText[30];
-		sprintf((char*)rightTrackText, "\r\nvalue:\t\t%d\r\n", byteCounter); 
-		VCP_Send(&rightTrackText);
-
-		if (strncmp(response, "OK", 2) == 0 && waitingForEvent == 1) 
-			waitingForEvent = 0; 
-		else if (strncmp(response, "ERROR\r\n", 7) == 0 && waitingForEvent == 1)
-			waitingForEvent = 0;		
-		else if (strncmp(response, "+", 1) == 0) 
-		{
-			if (strncmp(response, "+CIFSR:APIP", 11) == 0)
-			{
-				network.apIP = substrdelim(response, "\"");
-			}
-			else if (strncmp(response, "+CIFSR:APMAC", 12) == 0)
-			{
-				network.apMAC = substrdelim(response, "\"");
-			}
-			else if (strncmp(response, "+CIFSR:STAIP", 12) == 0)
-			{
-				network.stationIP = substrdelim(response, "\"");
-			}
-			else if (strncmp(response, "+CIFSR:STAMAC", 13) == 0)
-			{
-				network.stationMAC = substrdelim(response, "\"");
-			}
-			else if (strncmp(response, "+IPD", 4) == 0)
-			{
-				char *value = substrdelim2(response, ",", ":");
-				byteCounter = atoi(value) - strlen(response) + strlen(value) + 6; // 6: "+IPD,:"	
-				waitingForEvent = 2;
-			}
-		}	
 	}
 	
-	if (Command2Tx.count > 0 && waitingForEvent == 0)
+	if (Command2Tx.count > 0)
 	{			
 		char *command = TXCommandBufferGet(&Command2Tx, command);
 		HAL_UART_Transmit(&huart2, (char *)command, strlen(command), 5);
-			
-		if (Command2Tx.bits[Command2Tx.out - 1] == 1)
-			waitingForEvent = 1;
-		if (Command2Tx.bits[Command2Tx.out - 1] == 2)
-			waitingForEvent = 2;
+		
+		
 	} 
 }

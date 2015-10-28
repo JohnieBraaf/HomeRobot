@@ -1,26 +1,11 @@
 #include <HomeRobot.h>
 
-extern __IO uint32_t LeftTrack_RemainActive;
-extern __IO uint32_t RightTrack_RemainActive;
-extern __IO uint32_t Torso_RemainActive;
-extern __IO uint32_t Arms_RemainActive;
-extern __IO uint32_t Chest_RemainActive;
+
 extern __IO uint32_t Audio_tone;
 
 extern struct s_RxBuffer VCPRxBuffer;
 
-extern int rightTrackForward;
-extern int leftTrackForward;
-extern int torsoForward;
-extern int armsOpen;
-extern int chestCW;
 
-int rightTrackPower;
-int leftTrackPower;
-int torsoPower;
-int armsPower;
-int chestPower;
-int activeDuration;
 
 extern UART_HandleTypeDef huart2;
 extern DMA_HandleTypeDef hdma_usart2_rx;
@@ -102,10 +87,13 @@ int main(void)
 		for (x = y; x < 0; x--)
 			BSP_AUDIO_OUT_Play_Direct((uint16_t*)x, 2); 
 		*/
-		RightTrack();
-		LeftTrack();			
+		
 		UpdateESP();
-			
+		
+		// Process movement
+		RightTrack();
+		LeftTrack();		
+					
 		if (VCP_read(&byte, 1) == 1 )
 		{
 			vcpString[vcpIndex] = byte;
@@ -119,34 +107,7 @@ int main(void)
 					command[i] = vcpString[i];
 				}
 				command[vcpIndex] = '\0';
-				
-				if (strncmp(&command, "123\r\n", 5) == 0)
-				{					
-					TXCommandBufferPut(&Command2Tx, "AT\r\n", 1);					
-					TXCommandBufferPut(&Command2Tx, "AT+CIFSR\r\n", 1);
-				}
-				else if (strncmp(&command, "456\r\n", 5) == 0)
-				{					
-					//TXCommandBufferPut(&Command2Tx, "AT\r\n", 1);					
-					TXCommandBufferPut(&Command2Tx, "AT+CIPSTART=\"TCP\",\"www.google.com\",80\r\n", 1);
-					TXCommandBufferPut(&Command2Tx, "AT+CIPSEND=42\r\n", 1);
-					TXCommandBufferPut(&Command2Tx, "GET / HTTP/1.1\r\n", 0);
-					TXCommandBufferPut(&Command2Tx, "Host: www.google.com\r\n\r\n\r\n", 2);
-					TXCommandBufferPut(&Command2Tx, "AT+CIPCLOSE\r\n", 0);
-				} 
-				else if (strncmp(&command, "Start Server\r\n", 14) == 0)
-				{					
-					TXCommandBufferPut(&Command2Tx, "AT\r\n", 1);					
-					TXCommandBufferPut(&Command2Tx, "AT+CIPMUX=1\r\n", 1);
-					TXCommandBufferPut(&Command2Tx, "AT+CIPSERVER=1,80\r\n", 1);
-				} 
-				else
-				{
-					//VCP_Send(&vcpString);
-					//TXCommandBufferPut(&Command2Tx, &vcpString, 1);
-					HAL_UART_Transmit(&huart2, &command, vcpIndex, 5);
-				}
-				
+				HAL_UART_Transmit(&huart2, &command, vcpIndex, 5);
 				vcpIndex = 0;
 			}			
 		}
@@ -224,11 +185,6 @@ int main(void)
 void VCP_Send(const void *pBuffer)
 {
 	VCP_write((uint8_t *)pBuffer, strlen((uint8_t *)pBuffer));
-}
-
-void VCP_Collect(const void *pBuffer)
-{
-	byte = pBuffer;
 }
 
 void DMA1_Stream5_IRQHandler(void)
