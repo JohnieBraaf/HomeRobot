@@ -36,24 +36,36 @@ void UpdateESP(void)
 					char* val = *(tokens + i);
 					switch (i) 
 					{
-						case 0:
-							val = *(tokens + i) + 1; // strip first char
-							leftTrackPower = atoi(val);
-							LeftTrack_RemainActive = 500;
-							break;
-						case 1 :
-							rightTrackPower = atoi(val);
-							RightTrack_RemainActive = 500;
-							break;
-						case 2 :
-							torsoPower = atoi(val);
-							Torso_RemainActive = 500;
-							break;
-						}
+					case 0:
+						val = *(tokens + i) + 1; // strip first char
+						leftTrackPower = atoi(val);
+						LeftTrack_RemainActive = 500;
+						break;
+					case 1 :
+						rightTrackPower = atoi(val);
+						RightTrack_RemainActive = 500;
+						break;
+					case 2 :
+						torsoPower = atoi(val);
+						Torso_RemainActive = 500;
+						break;
+					case 3 :
+						torsoPower = atoi(val);
+						Torso_RemainActive = 500;
+						break;
+					case 4 :
+						armsPower = atoi(val);
+						Arms_RemainActive = 500;
+						break;
+					case 5 :
+						chestPower = atoi(val);
+						Chest_RemainActive = 500;
+						break;
+					}
 					
 					VCP_Send(val);
 					VCP_Send("\n");
-					
+					//free(val);
 					free(*(tokens + i));
 				}			
 				free(tokens);

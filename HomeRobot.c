@@ -39,21 +39,29 @@ int main(void)
 	MX_TIM4_Init();
 	MX_TIM5_Init();
 	MX_TIM9_Init();
-	MX_USART6_UART_Init();
 	MX_USART2_UART_Init();
 	//MX_I2S3_Init();
 	//MX_I2C1_Init();
-			
-	network.apIP = "0.0.0.0";
-	network.apMAC = "00:00:00:00:00";
-	network.stationIP = "0.0.0.0";
-	network.stationMAC = "00:00:00:00";
+	
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
+	
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 	
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
 
+	HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_4);
+	
+	HAL_TIM_PWM_Start(&htim9, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim9, TIM_CHANNEL_2);
+	
 	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 100, I2S_AUDIOFREQ_8K);
 	freq = 1000;
 	fs = 10;	
@@ -90,7 +98,6 @@ int main(void)
 		
 		UpdateESP();
 		
-		// Process movement
 		RightTrack();
 		LeftTrack();		
 					
@@ -111,74 +118,6 @@ int main(void)
 				vcpIndex = 0;
 			}			
 		}
-					
-		/*
-		if (size == 8)
-		{
-			connected = 1;
-			// header byte
-			VCP_read(&byte, 1); 						
-			leftTrackForward	= (byte >> 0) & 0x01;
-			rightTrackForward	= (byte >> 1) & 0x01;
-			torsoForward		= (byte >> 2) & 0x01;
-			armsOpen			= (byte >> 3) & 0x01;
-			chestCW				= (byte >> 4) & 0x01;
-			int f				= (byte >> 5) & 0x01;
-			int g				= (byte >> 6) & 0x01;
-			int h				= (byte >> 7) & 0x01;
-			
-			// payload
-			VCP_read(&byte, 1);
-			leftTrackPower = byte;
-			VCP_read(&byte, 1);
-			rightTrackPower  = byte;
-			VCP_read(&byte, 1);
-			torsoPower		= byte;
-			VCP_read(&byte, 1);
-			armsPower		= byte;
-			VCP_read(&byte, 1);
-			chestPower		= byte;
-			VCP_read(&byte, 1);
-			activeDuration	= byte;
-			LeftTrack_RemainActive = (int)activeDuration * 50;
-			RightTrack_RemainActive = activeDuration * 50;
-			Torso_RemainActive = activeDuration * 50;
-			Arms_RemainActive = activeDuration * 50;
-			Chest_RemainActive = activeDuration * 50;
-			
-			// tail
-			VCP_read(&byte, 1);
-			
-			// return debug messages
-			char *leftTrackText[30];
-			char *rightTrackText[30];
-			char *torsText[30];
-			char *armsText[30];
-			char *chestText[30];
-			char *durationText[30];
-			sprintf((char*)leftTrackText, "Right Track Forward:\t%d, %d\r\n", leftTrackForward, leftTrackPower); 
-			VCP_Send(&leftTrackText);
-			sprintf((char*)rightTrackText, "Left Track Forward:\t\t%d, %d\r\n", rightTrackForward, rightTrackPower); 
-			VCP_Send(&rightTrackText);
-			sprintf((char*)torsText, "Torso Forward:\t\t%d, %d\r\n", torsoForward, torsoPower); 
-			VCP_Send(&torsText);
-			sprintf((char*)armsText, "ArmsOpen:\t\t%d, %d\r\n", armsOpen, armsPower); 
-			VCP_Send(&armsText);
-			sprintf((char*)chestText, "ChestCW:\t\t%d, %d\r\n", chestCW, chestPower); 
-			VCP_Send(&chestText);
-			sprintf((char*)durationText, "Duration:\t\t\t\%dms\r\n", activeDuration * 50); 
-			VCP_Send(&durationText);
-			VCP_Send("**********");
-		}		
-		else if ((size > 0 && size < 6) || size > 6)
-		{
-			VCP_write("Unrecongnized command, expecting 6 bytes.\r\n", 43);
-			VCP_write("\r\nYou typed: \t", 14);
-			VCP_write(&byte, size);
-			VCP_write("\r\n", 2);
-			VCP_read(&byte, 1);
-		}
-		*/
 	}
 }
 
