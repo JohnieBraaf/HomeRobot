@@ -3,3 +3,8 @@
 
 void RightTrack();
 void LeftTrack();
+void Torso();
+void Arms();
+void Chest();
+
+void UpdateMovement();

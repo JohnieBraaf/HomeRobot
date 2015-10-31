@@ -15,6 +15,15 @@ int torsoPower			= 0;
 int armsPower			= 0;
 int chestPower			= 0;
 
+void UpdateMovement()
+{
+	LeftTrack();
+	RightTrack();
+	Torso();
+	Arms();
+	Chest();
+}
+
 void LeftTrack()
 {
 	if (leftTrackPower > 0 && LeftTrack_RemainActive > 0)

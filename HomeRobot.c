@@ -96,11 +96,9 @@ int main(void)
 			BSP_AUDIO_OUT_Play_Direct((uint16_t*)x, 2); 
 		*/
 		
-		UpdateESP();
+		UpdateESP(); // Check incoming messages
+		UpdateMovement(); // Update motors
 		
-		RightTrack();
-		LeftTrack();		
-					
 		if (VCP_read(&byte, 1) == 1 )
 		{
 			vcpString[vcpIndex] = byte;
