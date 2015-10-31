@@ -90,8 +90,8 @@ void Arms()
 	}
 	else if (armsPower < 0 && Arms_RemainActive > 0)
 	{
-		__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_1, 0);
-		__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_2, abs(armsPower));
+		__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_2, 0);
+		__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_1, abs(armsPower));
 	}
 	else
 	{
@@ -109,8 +109,8 @@ void Chest()
 	}
 	else if (chestPower < 0 && Chest_RemainActive > 0)
 	{
-		__HAL_TIM_SetCompare(&htim9, TIM_CHANNEL_1, 0);
-		__HAL_TIM_SetCompare(&htim9, TIM_CHANNEL_2, abs(chestPower));
+		__HAL_TIM_SetCompare(&htim9, TIM_CHANNEL_2, 0);
+		__HAL_TIM_SetCompare(&htim9, TIM_CHANNEL_1, abs(chestPower));
 	}
 	else
 	{

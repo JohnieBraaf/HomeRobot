@@ -50,14 +50,10 @@ void UpdateESP(void)
 						Torso_RemainActive = 500;
 						break;
 					case 3 :
-						torsoPower = atoi(val);
-						Torso_RemainActive = 500;
-						break;
-					case 4 :
 						armsPower = atoi(val);
 						Arms_RemainActive = 500;
 						break;
-					case 5 :
+					case 4 :
 						chestPower = atoi(val);
 						Chest_RemainActive = 500;
 						break;

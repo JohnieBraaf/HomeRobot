@@ -34,12 +34,12 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 	else if (htim_base->Instance == TIM3)
 	{
 		__TIM3_CLK_ENABLE();
-		GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_4 | GPIO_PIN_5;
+		GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
 		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
 		GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
 		GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
-		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 	}
 	else if (htim_base->Instance == TIM4)
 	{
@@ -86,7 +86,7 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 	else if (htim_base->Instance == TIM3)
 	{
 		__TIM3_CLK_DISABLE();
-		HAL_GPIO_DeInit(GPIOB, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_4 | GPIO_PIN_5);
+		HAL_GPIO_DeInit(GPIOA, GPIO_PIN_6 | GPIO_PIN_7);
 	}
 	else if (htim_base->Instance == TIM4)
 	{
@@ -106,7 +106,6 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 	}
 }
 
-/* TIM1 init function */
 void MX_TIM1_Init(void)
 {
 	TIM_ClockConfigTypeDef sClockSourceConfig;
@@ -182,8 +181,8 @@ void MX_TIM3_Init(void)
 	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
 	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
 	
-	HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_3);
-	HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_4);
+	HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1);
+	HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_2);
 }
 
 /* TIM4 init function */
@@ -254,10 +253,8 @@ void MX_TIM5_Init(void)
 
 }
 
-/* TIM9 init function */
 void MX_TIM9_Init(void)
 {
-
 	TIM_ClockConfigTypeDef sClockSourceConfig;
 	TIM_OC_InitTypeDef sConfigOC;
 
